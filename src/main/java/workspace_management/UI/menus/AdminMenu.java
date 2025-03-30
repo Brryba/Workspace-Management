@@ -10,11 +10,11 @@ import workspace_management.UI.read.ConsoleScanner;
 
 @Component
 public class AdminMenu extends AbstractMenu {
-    private AdminReservationViewer adminReservationViewer;
-    private UpdateMenuSelector updateMenuSelector;
-    private WorkspaceCreator workspaceCreator;
-    private WorkspaceRemover workspaceRemover;
-    private MainMenuSelector mainMenuSelector;
+    private final AdminReservationViewer adminReservationViewer;
+    private final UpdateMenuSelector updateMenuSelector;
+    private final WorkspaceCreator workspaceCreator;
+    private final WorkspaceRemover workspaceRemover;
+    private final MainMenuSelector mainMenuSelector;
 
     public AdminMenu(ConsoleScanner consoleScanner, AdminReservationViewer adminReservationViewer, UpdateMenuSelector updateMenuSelector, WorkspaceCreator workspaceCreator, WorkspaceRemover workspaceRemover, MainMenuSelector mainMenuSelector) {
         super(consoleScanner);

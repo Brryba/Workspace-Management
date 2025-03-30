@@ -3,16 +3,20 @@ package workspace_management.UI.menu_options.admin_menu;
 import org.springframework.stereotype.Component;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.service.ReservationService;
 
 @Component
 public class AdminReservationViewer extends AbstractOption {
-    public AdminReservationViewer(ConsoleScanner consoleScanner) {
+    private ReservationService reservationService;
+
+    public AdminReservationViewer(ConsoleScanner consoleScanner, ReservationService reservationService) {
         super(consoleScanner);
+        this.reservationService = reservationService;
     }
 
     @Override
     public void apply() {
-
+        //reservationsService.show();
     }
 
     @Override

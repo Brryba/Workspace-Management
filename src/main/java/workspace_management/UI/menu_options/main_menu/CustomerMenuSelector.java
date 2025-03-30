@@ -3,7 +3,7 @@ package workspace_management.UI.menu_options.main_menu;
 import org.springframework.stereotype.Component;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.read.ConsoleScanner;
-import workspace_management.service.customer.CustomerService;
+import workspace_management.service.CustomerService;
 
 @Component
 public class CustomerMenuSelector extends AbstractOption {

@@ -1,4 +1,4 @@
-package workspace_management.service.customer;
+package workspace_management.service;
 
 import org.springframework.stereotype.Service;
 import workspace_management.repository.CustomerRepository;

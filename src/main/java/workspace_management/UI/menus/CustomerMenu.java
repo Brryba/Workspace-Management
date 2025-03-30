@@ -10,11 +10,11 @@ import workspace_management.UI.read.ConsoleScanner;
 
 @Component
 public class CustomerMenu extends AbstractMenu {
-    private AvailableSpacesShower availableSpacesShower;
-    private CustomerReservationViewer customerReservationViewer;
-    private ReservationCanceller reservationCanceller;
-    private ReservationMaker reservationMaker;
-    private MainMenuSelector mainMenuSelector;
+    private final AvailableSpacesShower availableSpacesShower;
+    private final CustomerReservationViewer customerReservationViewer;
+    private final ReservationCanceller reservationCanceller;
+    private final ReservationMaker reservationMaker;
+    private final MainMenuSelector mainMenuSelector;
 
     public CustomerMenu(ConsoleScanner consoleScanner, AvailableSpacesShower availableSpacesShower, CustomerReservationViewer customerReservationViewer, ReservationCanceller reservationCanceller, ReservationMaker reservationMaker, MainMenuSelector mainMenuSelector) {
         super(consoleScanner);
