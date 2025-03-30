@@ -1,7 +1,7 @@
 package workspace_management.UI.menu_options;
 
 import org.springframework.stereotype.Component;
-import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public abstract class AbstractOption {

@@ -7,8 +7,8 @@ import workspace_management.service.CustomerService;
 
 @Controller
 public class CustomerController {
-    private CustomerService customerService;
-    private CustomerMenu customerMenu;
+    private final CustomerService customerService;
+    private final CustomerMenu customerMenu;
 
     @Autowired
     public CustomerController(CustomerService customerService, CustomerMenu customerMenu) {

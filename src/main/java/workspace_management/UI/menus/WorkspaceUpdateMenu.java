@@ -5,17 +5,22 @@ import workspace_management.UI.menu_options.main_menu.AdminMenuSelector;
 import workspace_management.UI.menu_options.update_menu.AvailabilityUpdater;
 import workspace_management.UI.menu_options.update_menu.PriceUpdater;
 import workspace_management.UI.menu_options.update_menu.TypeUpdater;
-import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public class WorkspaceUpdateMenu extends AbstractMenu {
     private int workspaceID;
-    private AdminMenuSelector adminMenuSelector;
-    private TypeUpdater typeUpdater;
-    private PriceUpdater priceUpdater;
-    private AvailabilityUpdater availabilityUpdater;
-    public WorkspaceUpdateMenu(ConsoleScanner consoleScanner) {
+    private final AdminMenuSelector adminMenuSelector;
+    private final TypeUpdater typeUpdater;
+    private final PriceUpdater priceUpdater;
+    private final AvailabilityUpdater availabilityUpdater;
+
+    public WorkspaceUpdateMenu(ConsoleScanner consoleScanner, AdminMenuSelector adminMenuSelector, TypeUpdater typeUpdater, PriceUpdater priceUpdater, AvailabilityUpdater availabilityUpdater) {
         super(consoleScanner);
+        this.adminMenuSelector = adminMenuSelector;
+        this.typeUpdater = typeUpdater;
+        this.priceUpdater = priceUpdater;
+        this.availabilityUpdater = availabilityUpdater;
     }
 
     public int getWorkspaceID() {

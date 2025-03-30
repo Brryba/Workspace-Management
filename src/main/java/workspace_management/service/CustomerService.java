@@ -7,7 +7,7 @@ import workspace_management.repository.CustomerRepository;
 public class CustomerService {
     private String currentCustomerName;
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;

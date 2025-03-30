@@ -4,13 +4,13 @@ import org.springframework.stereotype.Component;
 import workspace_management.UI.menu_options.main_menu.AdminMenuSelector;
 import workspace_management.UI.menu_options.main_menu.AppQuitter;
 import workspace_management.UI.menu_options.main_menu.CustomerMenuSelector;
-import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public class MainMenu extends AbstractMenu {
-    private CustomerMenuSelector customerMenuSelector;
-    private AdminMenuSelector adminMenuSelector;
-    private AppQuitter appQuitter;
+    private final CustomerMenuSelector customerMenuSelector;
+    private final AdminMenuSelector adminMenuSelector;
+    private final AppQuitter appQuitter;
 
     public MainMenu(ConsoleScanner consoleScanner, AppQuitter appQuitter, AdminMenuSelector adminMenuSelector, CustomerMenuSelector customerMenuSelector) {
         super(consoleScanner);

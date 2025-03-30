@@ -6,7 +6,7 @@ import workspace_management.UI.menu_options.admin_menu.UpdateMenuSelector;
 import workspace_management.UI.menu_options.admin_menu.WorkspaceCreator;
 import workspace_management.UI.menu_options.admin_menu.WorkspaceRemover;
 import workspace_management.UI.menu_options.main_menu.MainMenuSelector;
-import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public class AdminMenu extends AbstractMenu {

@@ -6,7 +6,7 @@ import workspace_management.UI.menu_options.customer_menu.CustomerReservationVie
 import workspace_management.UI.menu_options.customer_menu.ReservationCanceller;
 import workspace_management.UI.menu_options.customer_menu.ReservationMaker;
 import workspace_management.UI.menu_options.main_menu.MainMenuSelector;
-import workspace_management.UI.read.ConsoleScanner;
+import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public class CustomerMenu extends AbstractMenu {
