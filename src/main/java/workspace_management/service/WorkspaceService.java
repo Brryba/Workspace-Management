@@ -1,7 +1,8 @@
 package workspace_management.service;
 
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import workspace_management.event.WorkspaceDeletedEvent;
 import workspace_management.model.Workspace;
 import workspace_management.repository.WorkspaceRepository;
 
@@ -10,11 +11,11 @@ import java.util.List;
 @Service
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
-    private final ReservationService reservationService;
+    public final ApplicationEventPublisher applicationEventPublisher;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository, @Lazy ReservationService reservationService) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.workspaceRepository = workspaceRepository;
-        this.reservationService = reservationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public void addWorkspace(String type, double price, boolean isAvailable) {
@@ -60,7 +61,7 @@ public class WorkspaceService {
     }
 
     public void deleteWorkspace(int workspaceID) {
-        reservationService.deleteReservationConnectedToWorkspace(workspaceID);
+        applicationEventPublisher.publishEvent(new WorkspaceDeletedEvent(this, workspaceID));
         workspaceRepository.removeWorkspace(workspaceID);
     }
 }

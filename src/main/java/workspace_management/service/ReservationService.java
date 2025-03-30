@@ -1,6 +1,8 @@
 package workspace_management.service;
 
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
+import workspace_management.event.WorkspaceDeletedEvent;
 import workspace_management.model.Reservation;
 import workspace_management.repository.ReservationRepository;
 
@@ -8,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class ReservationService {
+public class ReservationService implements ApplicationListener<WorkspaceDeletedEvent> {
     private final ReservationRepository reservationRepository;
     private final WorkspaceService workspaceService;
 
@@ -42,5 +44,10 @@ public class ReservationService {
         Reservation reservation = reservationRepository.getReservation(reservationID).get();
         workspaceService.updateWorkspace(reservation.getWorkspaceID(), true);
         reservationRepository.deleteReservation(reservation);
+    }
+
+    @Override
+    public void onApplicationEvent(WorkspaceDeletedEvent event) {
+        deleteReservationConnectedToWorkspace(event.getWorkspaceID());
     }
 }
