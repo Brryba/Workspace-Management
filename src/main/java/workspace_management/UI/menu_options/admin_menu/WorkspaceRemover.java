@@ -16,9 +16,8 @@ public class WorkspaceRemover extends AbstractOption {
 
     @Override
     public void apply() {
-        System.out.println("Enter workspace ID to remove");
         int workspaceID = consoleScanner.readWorkspaceID();
-        //controller
+        workspaceController.deleteWorkspace(workspaceID);
     }
 
     @Override

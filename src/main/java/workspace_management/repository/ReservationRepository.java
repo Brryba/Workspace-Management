@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
-    @PersistenceContext
+    //@PersistenceContext
     private EntityManager entityManager;
 
     public void insertReservation(Reservation reservation) {

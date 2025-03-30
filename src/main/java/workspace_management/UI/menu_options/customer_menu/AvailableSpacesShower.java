@@ -16,7 +16,9 @@ public class AvailableSpacesShower extends AbstractOption {
 
     @Override
     public void apply() {
-        //workspaceController.getAll
+        workspaceController.getAvailableWorkspaces().ifPresentOrElse((workspaces -> {
+            workspaces.forEach(System.out::println);
+        }), () -> System.err.println("No available workspaces found"));
     }
 
     @Override

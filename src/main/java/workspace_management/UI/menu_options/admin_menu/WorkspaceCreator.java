@@ -19,10 +19,10 @@ public class WorkspaceCreator extends AbstractOption {
         System.out.println("Enter workspace type");
         String workspaceType = consoleScanner.readString();
         System.out.println("Enter workspace price");
-        String workspacePrice = consoleScanner.readString();
+        double workspacePrice = consoleScanner.readDouble();
         System.out.println("Is workspace available?");
         boolean isAvailable = consoleScanner.readBoolean();
-        //controller
+        workspaceController.addWorkspace(workspaceType, workspacePrice, isAvailable);
     }
 
     @Override

@@ -17,6 +17,7 @@ public class ConsoleScanner {
     private static final DateTimeFormatter dateTimeFormat
             = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private final Scanner scanner;
+
     public ConsoleScanner(WorkspaceController workspaceController, ReservationController reservationController) {
         this.scanner = new Scanner(System.in);
         this.workspaceController = workspaceController;
@@ -36,14 +37,18 @@ public class ConsoleScanner {
     }
 
     public int readWorkspaceID() {
+        workspaceController.getAllWorkspaces()
+                .ifPresentOrElse(workspaces -> workspaces.forEach(System.out::println),
+                        () -> System.out.println("Workspace not found"));
+
         System.out.println("Select workspace ID:");
         do {
             int workspaceID = readInt();
-            //if (workspaceRepository.containsWorkspace(workspaceID)) {
-            //    return workspaceID;
-            //} else {
-            //    System.err.println("No such workspace! Try again:");
-            //}
+            if (workspaceController.containsWorkspace(workspaceID)) {
+                return workspaceID;
+            } else {
+                System.err.println("No such workspace! Try again:");
+            }
         } while (true);
     }
 

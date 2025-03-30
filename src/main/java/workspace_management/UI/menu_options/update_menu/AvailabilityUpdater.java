@@ -1,6 +1,7 @@
 package workspace_management.UI.menu_options.update_menu;
 
 import org.springframework.stereotype.Component;
+import workspace_management.UI.context.WorkspaceContext;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.scanner.ConsoleScanner;
 import workspace_management.controller.WorkspaceController;
@@ -16,15 +17,13 @@ public class AvailabilityUpdater extends AbstractOption {
 
     @Override
     public void apply() {
-        System.out.println("Enter desired workspace ID");
-        int workspaceID = consoleScanner.readInt();
         System.out.println("Is available");
         boolean isAvailable = consoleScanner.readBoolean();
-        //controller
+        controller.updateWorkspace(WorkspaceContext.getWorkspaceID(), isAvailable);
     }
 
     @Override
     public String getMethodName() {
-        return "";
+        return "Update Availability";
     }
 }

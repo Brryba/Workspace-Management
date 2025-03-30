@@ -1,15 +1,18 @@
 package workspace_management.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.hibernate.HibernateException;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.springframework.stereotype.Repository;
 import workspace_management.model.Customer;
 
 @Repository
 public class CustomerRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public CustomerRepository(EntityManagerFactory entityManagerFactory) {
+        entityManager = entityManagerFactory.createEntityManager();
+    }
 
     public Customer findCustomer(String customerName) {
         return this.entityManager
@@ -17,17 +20,11 @@ public class CustomerRepository {
     }
 
     public void insertCustomer(String customerName) {
+        EntityTransaction transaction = entityManager.getTransaction();
         Customer customer = new Customer();
         customer.setName(customerName);
-        try {
-            this.entityManager.getTransaction().begin();
-            this.entityManager.persist(customer);
-            this.entityManager.getTransaction().commit();
-        } catch (HibernateException e) {
-            if (this.entityManager.getTransaction().isActive()) {
-                this.entityManager.getTransaction().rollback();
-            }
-            System.err.println(e.getMessage());
-        }
+        transaction.begin();
+        entityManager.persist(customer);
+        transaction.commit();
     }
 }
