@@ -5,7 +5,6 @@ import workspace_management.model.Workspace;
 import workspace_management.service.WorkspaceService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class WorkspaceController {
@@ -19,12 +18,16 @@ public class WorkspaceController {
         workspaceService.addWorkspace(type, price, isAvailable);
     }
 
-    public Optional<List<Workspace>> getAllWorkspaces() {
+    public List<Workspace> getAllWorkspaces() {
         return workspaceService.getAllWorkspaces();
     }
 
-    public Optional<List<Workspace>> getAvailableWorkspaces() {
+    public List<Workspace> getAvailableWorkspaces() {
         return workspaceService.getAvailableWorkspaces();
+    }
+
+    public Workspace getWorkspace(int id) {
+        return workspaceService.getWorkspace(id);
     }
 
     public boolean containsWorkspace(int workspaceID) {

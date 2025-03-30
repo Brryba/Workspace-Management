@@ -5,7 +5,6 @@ import workspace_management.UI.context.WorkspaceContext;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.scanner.ConsoleScanner;
 import workspace_management.controller.WorkspaceController;
-import workspace_management.model.Workspace;
 
 @Component
 public class TypeUpdater extends AbstractOption {

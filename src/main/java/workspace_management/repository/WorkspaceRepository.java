@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import workspace_management.model.Workspace;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class WorkspaceRepository {
@@ -30,16 +29,14 @@ public class WorkspaceRepository {
         return getWorkspace(workspaceID) != null;
     }
 
-    public Optional<List<Workspace>> getAllWorkspaces() {
+    public List<Workspace> getAllWorkspaces() {
         Query query = this.entityManager.createQuery("from Workspace");
-        List<Workspace> workspaces = query.getResultList();
-        return Optional.ofNullable(workspaces);
+        return query.getResultList();
     }
 
-    public Optional<List<Workspace>> getAvailableWorkspaces() {
+    public List<Workspace> getAvailableWorkspaces() {
         Query query = this.entityManager.createQuery("from Workspace where isAvailable = true");
-        List<Workspace> workspaces = query.getResultList();
-        return Optional.ofNullable(workspaces);
+        return query.getResultList();
     }
 
     public void removeWorkspace(int workspaceID) {

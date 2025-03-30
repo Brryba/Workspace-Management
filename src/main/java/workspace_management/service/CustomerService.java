@@ -1,6 +1,7 @@
 package workspace_management.service;
 
 import org.springframework.stereotype.Service;
+import workspace_management.UI.context.CustomerContext;
 import workspace_management.repository.CustomerRepository;
 
 @Service
@@ -16,6 +17,6 @@ public class CustomerService {
         if (customerRepository.findCustomer(name) == null) {
             customerRepository.insertCustomer(name);
         }
-        currentCustomerName = name;
+        CustomerContext.setCustomerName(name);
     }
 }

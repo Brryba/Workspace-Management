@@ -1,6 +1,7 @@
 package workspace_management.UI.context;
 
 public class CustomerContext {
+    private CustomerContext() {}
     private static String customerName;
 
     public static String getCustomerName() {

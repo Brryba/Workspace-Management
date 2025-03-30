@@ -1,6 +1,8 @@
 package workspace_management.UI.context;
 
 public class WorkspaceContext {
+    private WorkspaceContext() {}
+
     private static int workspaceID;
 
     public static int getWorkspaceID() {

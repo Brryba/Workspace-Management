@@ -5,7 +5,6 @@ import workspace_management.UI.context.CustomerContext;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.menus.CustomerMenu;
 import workspace_management.UI.scanner.ConsoleScanner;
-import workspace_management.service.CustomerService;
 
 @Component
 public class CustomerMenuSelector extends AbstractOption {

@@ -1,6 +1,7 @@
 package workspace_management.UI.menu_options.admin_menu;
 
 import org.springframework.stereotype.Component;
+import workspace_management.UI.exception.NoWorkspacesFoundException;
 import workspace_management.UI.menu_options.AbstractOption;
 import workspace_management.UI.scanner.ConsoleScanner;
 import workspace_management.controller.WorkspaceController;
@@ -16,8 +17,12 @@ public class WorkspaceRemover extends AbstractOption {
 
     @Override
     public void apply() {
-        int workspaceID = consoleScanner.readWorkspaceID();
-        workspaceController.deleteWorkspace(workspaceID);
+        try {
+            int workspaceID = consoleScanner.readWorkspaceID(false);
+            workspaceController.deleteWorkspace(workspaceID);
+        } catch (NoWorkspacesFoundException e) {
+            System.err.println("No workspaces found");
+        }
     }
 
     @Override

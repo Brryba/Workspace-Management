@@ -1,7 +1,6 @@
 package workspace_management.UI.menus;
 
 import org.springframework.stereotype.Component;
-import workspace_management.UI.menu_options.main_menu.AdminMenuSelector;
 import workspace_management.UI.menu_options.update_menu.AvailabilityUpdater;
 import workspace_management.UI.menu_options.update_menu.PriceUpdater;
 import workspace_management.UI.menu_options.update_menu.TypeUpdater;

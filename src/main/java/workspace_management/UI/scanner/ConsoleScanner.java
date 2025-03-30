@@ -2,20 +2,26 @@ package workspace_management.UI.scanner;
 
 
 import org.springframework.stereotype.Component;
+import workspace_management.UI.exception.NoReservationsFoundException;
+import workspace_management.UI.exception.NoWorkspacesFoundException;
 import workspace_management.controller.ReservationController;
 import workspace_management.controller.WorkspaceController;
+import workspace_management.model.Reservation;
+import workspace_management.model.Workspace;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 @Component
 public class ConsoleScanner {
     private final WorkspaceController workspaceController;
     private final ReservationController reservationController;
-    private static final DateTimeFormatter dateTimeFormat
-            = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private final String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
+    private final DateTimeFormatter dateTimeFormatter
+            = DateTimeFormatter.ofPattern(dateTimeFormat);
     private final Scanner scanner;
 
     public ConsoleScanner(WorkspaceController workspaceController, ReservationController reservationController) {
@@ -36,15 +42,19 @@ public class ConsoleScanner {
         }
     }
 
-    public int readWorkspaceID() {
-        workspaceController.getAllWorkspaces()
-                .ifPresentOrElse(workspaces -> workspaces.forEach(System.out::println),
-                        () -> System.out.println("Workspace not found"));
+    public int readWorkspaceID(boolean requireAvailable) throws NoWorkspacesFoundException {
+        List<Workspace> workspaces = requireAvailable ? workspaceController.getAvailableWorkspaces()
+                : workspaceController.getAllWorkspaces();
+        if (workspaces.isEmpty()) {
+            throw new NoWorkspacesFoundException();
+        }
 
+        workspaces.forEach(System.out::println);
         System.out.println("Select workspace ID:");
         do {
             int workspaceID = readInt();
-            if (workspaceController.containsWorkspace(workspaceID)) {
+            Workspace workspace = workspaceController.getWorkspace(workspaceID);
+            if (workspace != null) {
                 return workspaceID;
             } else {
                 System.err.println("No such workspace! Try again:");
@@ -52,11 +62,24 @@ public class ConsoleScanner {
         } while (true);
     }
 
-    public int readReservationID() {
+    public int readReservationID(String userName) throws NoReservationsFoundException {
+        List<Reservation> reservations = reservationController.getReservations(userName);
+        if (reservations.isEmpty()) {
+            throw new NoReservationsFoundException();
+        }
+
+        reservations.forEach(System.out::println);
         System.out.println("Select reservation ID:");
         do {
             int reservationID = readInt();
-
+            boolean contains = reservations.stream()
+                    .map(Reservation::getReservationID)
+                    .anyMatch(r -> r == reservationID);
+            if (contains) {
+                return reservationID;
+            } else {
+                System.err.println("No such reservation! Try again:");
+            }
         } while (true);
     }
 
@@ -94,7 +117,7 @@ public class ConsoleScanner {
         do {
             String input = scanner.nextLine();
             try {
-                return LocalDateTime.parse(input, dateTimeFormat);
+                return LocalDateTime.parse(input, dateTimeFormatter);
             } catch (DateTimeParseException exception) {
                 System.err.println("Please type a valid date. Try again:");
             }

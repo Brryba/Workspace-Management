@@ -5,7 +5,7 @@ import workspace_management.UI.scanner.ConsoleScanner;
 
 @Component
 public abstract class AbstractOption {
-    protected ConsoleScanner consoleScanner;
+    protected final ConsoleScanner consoleScanner;
 
     public AbstractOption(ConsoleScanner consoleScanner) {
         this.consoleScanner = consoleScanner;

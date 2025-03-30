@@ -1,7 +1,7 @@
 package workspace_management.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Repository;
@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
-    //@PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public ReservationRepository(EntityManagerFactory entityManagerFactory) {
+        this.entityManager = entityManagerFactory.createEntityManager();
+    }
 
     public void insertReservation(Reservation reservation) {
         try {
@@ -30,17 +33,25 @@ public class ReservationRepository {
         return Optional.ofNullable(this.entityManager.find(Reservation.class, reservationID));
     }
 
-    public Optional<List<Reservation>> getReservations() {
+    public List<Reservation> getReservations() {
         Query query = entityManager.createQuery("FROM Reservation");
-        List<Reservation> reservations = query.getResultList();
-        return reservations.isEmpty() ? Optional.empty() : Optional.of(reservations);
+        return query.getResultList();
     }
 
-    public Optional<List<Reservation>> getReservations(String customerName) {
+    public List<Reservation> getReservations(String customerName) {
         Query query = entityManager.createQuery("FROM Reservation WHERE customerName = :name");
         query.setParameter("name", customerName);
+        return query.getResultList();
+    }
+
+    public Optional<Reservation> getReservationByWorkspaceID(int workspaceID) {
+        Query query = entityManager.createQuery("FROM Reservation WHERE workspaceID = :workspaceID");
+        query.setParameter("workspaceID", workspaceID);
         List<Reservation> reservations = query.getResultList();
-        return reservations.isEmpty() ? Optional.empty() : Optional.of(reservations);
+        if (reservations.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(reservations.getFirst());
     }
 
     public void deleteReservation(Reservation reservation) {

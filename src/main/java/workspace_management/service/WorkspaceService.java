@@ -1,18 +1,20 @@
 package workspace_management.service;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import workspace_management.model.Workspace;
 import workspace_management.repository.WorkspaceRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
+    private final ReservationService reservationService;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, @Lazy ReservationService reservationService) {
         this.workspaceRepository = workspaceRepository;
+        this.reservationService = reservationService;
     }
 
     public void addWorkspace(String type, double price, boolean isAvailable) {
@@ -23,12 +25,16 @@ public class WorkspaceService {
         workspaceRepository.persistWorkspace(workspace);
     }
 
-    public Optional<List<Workspace>> getAllWorkspaces() {
+    public List<Workspace> getAllWorkspaces() {
         return workspaceRepository.getAllWorkspaces();
     }
 
-    public Optional<List<Workspace>> getAvailableWorkspaces() {
+    public List<Workspace> getAvailableWorkspaces() {
         return workspaceRepository.getAvailableWorkspaces();
+    }
+
+    public Workspace getWorkspace(int workspaceID) {
+        return workspaceRepository.getWorkspace(workspaceID);
     }
 
     public boolean containsWorkspace(int workspaceId) {
@@ -54,6 +60,7 @@ public class WorkspaceService {
     }
 
     public void deleteWorkspace(int workspaceID) {
+        reservationService.deleteReservationConnectedToWorkspace(workspaceID);
         workspaceRepository.removeWorkspace(workspaceID);
     }
 }

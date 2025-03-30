@@ -24,10 +24,11 @@ public class Reservation {
     private static final DateTimeFormatter dateTimeFormatter
             = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    public Reservation(String customerName, int workplaceID, String workspaceType) {
+    public Reservation(String customerName, int workspaceID, LocalDateTime start, LocalDateTime end) {
         this.customerName = customerName;
-        this.workspaceID = workplaceID;
-        this.workspaceType = workspaceType;
+        this.workspaceID = workspaceID;
+        this.start = start;
+        this.end = end;
     }
 
     public Reservation() {
@@ -39,44 +40,16 @@ public class Reservation {
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
     }
 
-    public void setStart(String date, String time) {
-        this.start = parseDateTime(date, time);
-    }
-
-    public void setStart(Timestamp timestamp) {
-        this.start = timestamp.toLocalDateTime();
-    }
-
-    public void setEnd(Timestamp timestamp) {
-        this.end = timestamp.toLocalDateTime();
-    }
-
-    public void setEnd(String date, String time) {
-        this.end = parseDateTime(date, time);
+    public void setWorkspaceType(String workspaceType) {
+        this.workspaceType = workspaceType;
     }
 
     public int getReservationID() {
         return reservationID;
     }
 
-    public void setReservationID(int reservationID) {
-        this.reservationID = reservationID;
-    }
-
-    public String getCustomerName() {
-        return this.customerName;
-    }
-
     public int getWorkspaceID() {
         return this.workspaceID;
-    }
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
     }
 
     @Override
@@ -85,11 +58,11 @@ public class Reservation {
                 "\nWorkplace ID: " + this.workspaceID +
                 "\nWorkplace name: " + this.workspaceType +
                 "\nStart Time: " + start.format(dateTimeFormatter) +
-                "\nEnd Time: " + end.format(dateTimeFormatter);
+                "\nEnd Time: " + end.format(dateTimeFormatter) + "\n";
     }
 
     public String toStringAdmin() {
-        return "Customer Name:" + this.customerName +
-                "\n" + this;
+        return "Customer Name: " + this.customerName +
+                "\n" + this + "\n";
     }
 }

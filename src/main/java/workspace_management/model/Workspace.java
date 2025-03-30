@@ -17,20 +17,8 @@ public class Workspace implements Serializable {
     @Column(columnDefinition = "true")
     private boolean isAvailable = true;
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public int getID() {
-        return this.ID;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
     }
 
     public void setType(String type) {
@@ -41,15 +29,8 @@ public class Workspace implements Serializable {
         this.price = new BigDecimal(price).setScale(2, RoundingMode.HALF_DOWN);
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price.setScale(2, RoundingMode.HALF_DOWN);
-    }
-
     public void setAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
-    }
-    public boolean isAvailable() {
-        return this.isAvailable;
     }
 
     @Override
