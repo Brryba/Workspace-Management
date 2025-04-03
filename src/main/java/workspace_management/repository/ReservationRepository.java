@@ -51,7 +51,7 @@ public class ReservationRepository {
         if (reservations.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(reservations.getFirst());
+        return Optional.of(reservations.get(0));
     }
 
     public void deleteReservation(Reservation reservation) {

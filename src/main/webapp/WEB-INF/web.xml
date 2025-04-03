@@ -2,7 +2,7 @@
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
-                            https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
     
         <servlet>
@@ -14,8 +14,8 @@
             </init-param>
             
             <init-param>
-                <param-name>contextConfigurator</param-name>
-                <param-value>identifier.config.MvcConfig</param-value>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>workspace_management.config.MvcConfig</param-value>
             </init-param>
             <load-on-startup>1</load-on-startup>
         </servlet>
