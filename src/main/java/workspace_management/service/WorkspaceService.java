@@ -2,10 +2,12 @@ package workspace_management.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import workspace_management.dto.workspace.WorkspaceDto;
 import workspace_management.event.WorkspaceDeletedEvent;
 import workspace_management.model.Workspace;
 import workspace_management.repository.WorkspaceRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -63,5 +65,13 @@ public class WorkspaceService {
     public void deleteWorkspace(int workspaceID) {
         applicationEventPublisher.publishEvent(new WorkspaceDeletedEvent(this, workspaceID));
         workspaceRepository.removeWorkspace(workspaceID);
+    }
+
+    public void updateWorkspace(WorkspaceDto workspaceDto) {
+        Workspace workspace = new Workspace(workspaceDto.getId(),
+                workspaceDto.getType(),
+                new BigDecimal(workspaceDto.getPrice()),
+                workspaceDto.isAvailable());
+        workspaceRepository.updateWorkspace(workspace);
     }
 }

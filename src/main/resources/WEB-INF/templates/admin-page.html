@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+<body>
+<h1>Administrator panel</h1>
+<h2>Workspace types</h2>
+<ul th:each="workspace : ${workspaces}">
+    <li>
+        <label th:text="'ID: ' + ${workspace.ID}"></label>
+        <br>
+        <label th:text="'Type: ' + ${workspace.type}"></label>
+        <br>
+        <label th:text="'Price: ' + ${workspace.price}"></label>
+        <br>
+        <label th:text="'Available: ' + ${workspace.isAvailable}"></label>
+        <br>
+    </li>
+</ul>
+<form th:action="@{/workspace}" method="get">
+    <label>
+        EDIT
+        Enter ID:
+        <input type="number" name="id" required>
+    </label>
+    <button>Select</button>
+</form>
+<form th:action="@{/workspace/delete}" method="post">
+    <label>
+        DELETE
+        Enter ID:
+        <input type="number" name="id" required>
+    </label>
+    <button>Select</button>
+</form>
+<form th:action="@{/workspace/create}">
+    <button>Create workspace</button>
+</form>
+</body>
+</html>

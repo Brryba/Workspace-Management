@@ -21,6 +21,13 @@ public class WorkspaceRepository {
         transaction.commit();
     }
 
+    public void updateWorkspace(Workspace workspace) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.merge(workspace);
+        transaction.commit();
+    }
+
     public Workspace getWorkspace(int workspaceID) {
         return this.entityManager.find(Workspace.class, workspaceID);
     }

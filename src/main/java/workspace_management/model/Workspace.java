@@ -17,8 +17,30 @@ public class Workspace implements Serializable {
     @Column(columnDefinition = "true")
     private boolean isAvailable = true;
 
+    public Workspace() {
+    }
+
+    public Workspace(int ID, String type, BigDecimal price, boolean isAvailable) {
+        this.ID = ID;
+        this.type = type;
+        this.price = price;
+        this.isAvailable = isAvailable;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
     public void setType(String type) {
