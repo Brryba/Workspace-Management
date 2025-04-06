@@ -5,6 +5,7 @@
     <title>Admin</title>
 </head>
 <body>
+<p th:if="${error}" th:text="${error}" style="color: red;"></p>
 <h1>Administrator panel</h1>
 <h2>Workspace types</h2>
 <ul th:each="workspace : ${workspaces}">
@@ -32,6 +33,7 @@
         DELETE
         Enter ID:
         <input type="number" name="id" required>
+        <p th:if="${error}" th:text="${error}" style="color: red;"></p>
     </label>
     <button>Select</button>
 </form>

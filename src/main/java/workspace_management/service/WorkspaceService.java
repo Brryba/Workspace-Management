@@ -2,7 +2,7 @@ package workspace_management.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import workspace_management.dto.workspace.WorkspaceDto;
+import workspace_management.dto.WorkspaceDto;
 import workspace_management.event.WorkspaceDeletedEvent;
 import workspace_management.model.Workspace;
 import workspace_management.repository.WorkspaceRepository;

@@ -1,9 +1,9 @@
-package workspace_management.dto.customer;
+package workspace_management.dto;
 
 import jakarta.validation.constraints.Size;
 
 public class CustomerDto {
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 100, message = "Name must not be empty")
     private String name;
 
     public String getName() {

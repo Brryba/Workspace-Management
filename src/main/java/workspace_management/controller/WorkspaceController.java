@@ -5,11 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import workspace_management.dto.workspace.WorkspaceDto;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import workspace_management.dto.WorkspaceDto;
 import workspace_management.model.Workspace;
 import workspace_management.service.WorkspaceService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/workspace")
@@ -37,18 +36,28 @@ public class WorkspaceController {
 
     @PostMapping("/edit")
     public String updateWorkspace(@ModelAttribute(name = "workspaceInfo")
-                                      @Valid WorkspaceDto workspaceInfo, BindingResult result) {
+                                      @Valid WorkspaceDto workspaceInfo, BindingResult result,
+                                  RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "workspace-update";
         }
 
-        workspaceService.updateWorkspace(workspaceInfo);
+        if (workspaceService.containsWorkspace(workspaceInfo.getId())) {
+            workspaceService.updateWorkspace(workspaceInfo);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Workspace not exists");
+        }
+
         return "redirect:/admin";
     }
 
     @PostMapping("/delete")
-    public String deleteWorkspace(@RequestParam(name = "id") int workspaceID) {
-        workspaceService.deleteWorkspace(workspaceID);
+    public String deleteWorkspace(@RequestParam(name = "id") int workspaceID, RedirectAttributes redirectAttributes) {
+        if (workspaceService.containsWorkspace(workspaceID)) {
+            workspaceService.deleteWorkspace(workspaceID);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Workspace does not exist");
+        }
         return "redirect:/admin";
     }
 }

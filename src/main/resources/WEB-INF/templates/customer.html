@@ -6,6 +6,7 @@
 </head>
 <body>
 <h2 th:text="${name}"></h2>
+<p th:if="${error}" th:text="${error}" style="color: red;"></p>
 <h3>My reservations</h3>
 <ul th:each="reservation : ${reservations}">
     <li>

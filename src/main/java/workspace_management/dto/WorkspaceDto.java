@@ -1,17 +1,14 @@
-package workspace_management.dto.workspace;
+package workspace_management.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.NumberFormat;
 
 public class WorkspaceDto {
     private int id;
     @Size(min = 1, max = 50)
     private String type;
-    @Pattern(
-            regexp = "^[0-9]+(\\.[0-9]{1,2})?$"
-    )
+    @NumberFormat(style = NumberFormat.Style.CURRENCY)
     private String price;
     private boolean available;
     private boolean existing = false;
