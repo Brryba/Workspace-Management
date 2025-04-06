@@ -21,7 +21,7 @@ public class AdminViewController {
     @GetMapping
     public String admin(Model model) {
         model.addAttribute("workspaces", workspaceService.getAllWorkspaces());
-        //model.addAttribute("reservations", reservationService.getAllReservations());
+        model.addAttribute("reservations", reservationService.getAllReservations());
         return "admin-page";
     }
 }

@@ -2,7 +2,6 @@ package workspace_management.model;
 
 import jakarta.persistence.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +32,42 @@ public class Reservation {
 
     public Reservation() {
 
+    }
+
+    public void setReservationID(int reservationID) {
+        this.reservationID = reservationID;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setWorkspaceID(int workspaceID) {
+        this.workspaceID = workspaceID;
+    }
+
+    public String getWorkspaceType() {
+        return workspaceType;
+    }
+
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
 
     private LocalDateTime parseDateTime(String date, String time) {

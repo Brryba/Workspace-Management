@@ -38,5 +38,22 @@
 <form th:action="@{/workspace/create}">
     <button>Create workspace</button>
 </form>
+<h2>Reservations</h2>
+<ul th:each="reservation : ${reservations}">
+    <li>
+        <label th:text="'ID: ' + ${reservation.reservationID}"></label>
+        <br>
+        <label th:text="'Customer: ' + ${reservation.customerName}"></label>
+        <br>
+        <label th:text="'Workspace ID: ' + ${reservation.workspaceID}"></label>
+        <br>
+        <label th:text="'Workspace type: ' + ${reservation.workspaceType}"></label>
+        <br>
+        <label th:text="'Start time: ' + ${reservation.start}"></label>
+        <br>
+        <label th:text="'End time: ' + ${reservation.end}"></label>
+        <br>
+    </li>
+</ul>
 </body>
 </html>
