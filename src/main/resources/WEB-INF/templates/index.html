@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Welcome to Workspace reservation system!</h1>
-<form action="#" th:action="@{/customer}" th:object="${customer}" method="post">
+<form action="#" th:action="@{/customer}" th:object="${customer}" method="get">
     <label>
         Log in as customer
         <input th:field="*{name}">

@@ -2,6 +2,7 @@ package workspace_management.service;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
+import workspace_management.dto.ReservationDto;
 import workspace_management.event.WorkspaceDeletedEvent;
 import workspace_management.model.Reservation;
 import workspace_management.repository.ReservationRepository;
@@ -27,6 +28,14 @@ public class ReservationService implements ApplicationListener<WorkspaceDeletedE
         workspaceService.updateWorkspace(workspaceID, false);
     }
 
+    public void createNewReservation(ReservationDto reservationDto) {
+        Reservation reservation = new Reservation(reservationDto.getCustomerName(), reservationDto.getWorkspaceID(),
+                reservationDto.getStart(), reservationDto.getEnd());
+        reservation.setWorkspaceType(workspaceService.getWorkspace(reservationDto.getWorkspaceID()).getType());
+        reservationRepository.insertReservation(reservation);
+        workspaceService.updateWorkspace(reservation.getWorkspaceID(), false);
+    }
+
     public List<Reservation> getAllReservations() {
         return reservationRepository.getReservations();
     }
@@ -43,6 +52,12 @@ public class ReservationService implements ApplicationListener<WorkspaceDeletedE
     public void deleteReservation(int reservationID) {
         Reservation reservation = reservationRepository.getReservation(reservationID).get();
         workspaceService.updateWorkspace(reservation.getWorkspaceID(), true);
+        reservationRepository.deleteReservation(reservation);
+    }
+
+    public void deleteReservation(ReservationDto reservationDto) {
+        Reservation reservation = new Reservation();
+        reservation.setCustomerName(reservationDto.getCustomerName());
         reservationRepository.deleteReservation(reservation);
     }
 
