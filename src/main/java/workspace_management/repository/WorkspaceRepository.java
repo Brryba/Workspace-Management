@@ -1,4 +1,4 @@
-package workspace_management.repository;
+/*package workspace_management.repository;
 
 import jakarta.persistence.*;
 import org.springframework.stereotype.Repository;
@@ -52,3 +52,4 @@ public class WorkspaceRepository {
         this.entityManager.getTransaction().commit();
     }
 }
+*/

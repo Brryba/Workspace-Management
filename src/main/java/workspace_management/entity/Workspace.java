@@ -1,6 +1,7 @@
-package workspace_management.model;
+package workspace_management.entity;
 
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class Workspace implements Serializable {
     private int ID;
     private String type;
     private BigDecimal price;
-    @Column(columnDefinition = "true")
+    @Column(name = "IsAvailable", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isAvailable = true;
 
     public Workspace() {

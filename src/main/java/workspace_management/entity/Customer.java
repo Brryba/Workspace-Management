@@ -1,4 +1,4 @@
-package workspace_management.model;
+package workspace_management.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,14 @@ public class Customer {
     @Column(name = "name")
     private String name;
 
+    public Customer() {
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

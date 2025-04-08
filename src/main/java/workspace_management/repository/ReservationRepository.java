@@ -1,4 +1,4 @@
-package workspace_management.repository;
+/*package workspace_management.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -60,3 +60,4 @@ public class ReservationRepository {
         this.entityManager.getTransaction().commit();
     }
 }
+*/

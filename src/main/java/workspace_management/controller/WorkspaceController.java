@@ -1,4 +1,4 @@
-package workspace_management.controller;
+/*package workspace_management.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -61,3 +61,4 @@ public class WorkspaceController {
         return "redirect:/admin";
     }
 }
+*/

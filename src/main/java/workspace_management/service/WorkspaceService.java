@@ -1,4 +1,4 @@
-package workspace_management.service;
+/*package workspace_management.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -75,3 +75,4 @@ public class WorkspaceService {
         workspaceRepository.updateWorkspace(workspace);
     }
 }
+*/

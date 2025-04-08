@@ -1,6 +1,5 @@
 package workspace_management.dto;
 
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
 

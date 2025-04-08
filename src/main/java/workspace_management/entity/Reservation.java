@@ -1,4 +1,4 @@
-package workspace_management.model;
+package workspace_management.entity;
 
 import jakarta.persistence.*;
 

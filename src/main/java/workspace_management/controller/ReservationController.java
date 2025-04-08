@@ -1,14 +1,12 @@
-package workspace_management.controller;
+/*package workspace_management.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import workspace_management.controller.view.CustomerViewController;
 import workspace_management.dto.CustomerDto;
 import workspace_management.dto.ReservationDto;
-import workspace_management.model.Customer;
 import workspace_management.model.Reservation;
 import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
@@ -21,14 +19,12 @@ import java.util.Optional;
 @RequestMapping("/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
-    private final CustomerViewController customerController;
     private final ReservationRepository reservationRepository;
     private final WorkspaceService workspaceService;
     private final WorkspaceRepository workspaceRepository;
 
-    public ReservationController(ReservationService reservationService, CustomerViewController customerController, ReservationRepository reservationRepository, WorkspaceService workspaceService, WorkspaceRepository workspaceRepository) {
+    public ReservationController(ReservationService reservationService, ReservationRepository reservationRepository, WorkspaceService workspaceService, WorkspaceRepository workspaceRepository) {
         this.reservationService = reservationService;
-        this.customerController = customerController;
         this.reservationRepository = reservationRepository;
         this.workspaceService = workspaceService;
         this.workspaceRepository = workspaceRepository;
@@ -61,3 +57,4 @@ public class ReservationController {
         }
     }
 }
+*/

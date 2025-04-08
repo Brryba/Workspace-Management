@@ -1,4 +1,4 @@
-package workspace_management.service;
+/*package workspace_management.service;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -66,3 +66,4 @@ public class ReservationService implements ApplicationListener<WorkspaceDeletedE
         deleteReservationConnectedToWorkspace(event.getWorkspaceID());
     }
 }
+*/
