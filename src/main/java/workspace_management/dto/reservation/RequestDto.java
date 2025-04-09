@@ -1,23 +1,11 @@
 package workspace_management.dto.reservation;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter @Setter
+@NoArgsConstructor
 public class RequestDto extends BaseReservationDto {
     protected String customerName;
-
-    public RequestDto(int workspaceID, LocalDateTime start, LocalDateTime end, String customerName) {
-        super(workspaceID, start, end);
-        this.customerName = customerName;
-    }
-
-    public RequestDto() {
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
 }

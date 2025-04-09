@@ -2,10 +2,7 @@ package workspace_management.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workspace_management.dto.reservation.RequestDto;
-import workspace_management.dto.reservation.UserResponseDto;
-import workspace_management.dto.reservation.BaseReservationDto;
-import workspace_management.dto.reservation.ReservationMapper;
+import workspace_management.dto.reservation.*;
 import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.CustomerNotFoundException;
@@ -34,8 +31,8 @@ public class ReservationService {
         this.mapper = mapper;
     }
 
-    public List<UserResponseDto> getAllReservations() {
-        return reservationRepository.findAll().stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
+    public List<AdminResponseDto> getAllReservations() {
+        return reservationRepository.findAll().stream().map(mapper::toResponseAdminDto).collect(Collectors.toList());
     }
 
     public List<UserResponseDto> getReservationsByCustomerName(String customerName) {

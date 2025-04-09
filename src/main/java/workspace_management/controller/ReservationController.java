@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import workspace_management.dto.reservation.AdminResponseDto;
 import workspace_management.dto.reservation.RequestDto;
 import workspace_management.dto.reservation.UserResponseDto;
-import workspace_management.dto.reservation.BaseReservationDto;
 import workspace_management.exception.CustomerNotFoundException;
 import workspace_management.exception.ReservationNotFoundException;
 import workspace_management.exception.WorkspaceNotAvailableException;
@@ -25,7 +25,7 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> showReservations() {
+    public ResponseEntity<List<AdminResponseDto>> showReservations() {
         return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
     }
 
