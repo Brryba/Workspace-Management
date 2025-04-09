@@ -71,11 +71,13 @@ public class ReservationService {
                 .orElseThrow(ReservationNotFoundException::new);
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
-        mapper.updateReservation(reservation, requestDto,
-                workspace.getID(), workspace.getType());
-        if (!workspace.isAvailable()) {
+        if (!workspace.isAvailable() && reservation.getWorkspaceID()
+                != requestDto.getWorkspaceID()) {
             throw new WorkspaceNotAvailableException();
         }
+
+        mapper.updateReservation(reservation, requestDto,
+                workspace.getID(), workspace.getType());
         workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservationRepository.save(reservation));
