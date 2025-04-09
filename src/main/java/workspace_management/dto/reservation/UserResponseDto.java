@@ -1,16 +1,13 @@
 package workspace_management.dto.reservation;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
-public class IdentifiedReservationDto extends ReservationDto {
-    @NotNull
+public class UserResponseDto extends BaseReservationDto {
     protected int id;
 
-    public IdentifiedReservationDto() {}
+    public UserResponseDto() {}
 
-    public IdentifiedReservationDto(int workspaceID, LocalDateTime start, LocalDateTime end, int id) {
+    public UserResponseDto(int workspaceID, LocalDateTime start, LocalDateTime end, int id) {
         super(workspaceID, start, end);
         this.id = id;
     }

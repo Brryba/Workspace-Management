@@ -1,44 +1,100 @@
 package workspace_management.service;
 
 import org.springframework.stereotype.Service;
-import workspace_management.dto.reservation.IdentifiedReservationDto;
-import workspace_management.dto.reservation.ReservationDto;
+import org.springframework.transaction.annotation.Transactional;
+import workspace_management.dto.reservation.RequestDto;
+import workspace_management.dto.reservation.UserResponseDto;
+import workspace_management.dto.reservation.BaseReservationDto;
 import workspace_management.dto.reservation.ReservationMapper;
 import workspace_management.entity.Reservation;
+import workspace_management.entity.Workspace;
+import workspace_management.exception.CustomerNotFoundException;
+import workspace_management.exception.ReservationNotFoundException;
+import workspace_management.exception.WorkspaceNotAvailableException;
 import workspace_management.exception.WorkspaceNotFoundException;
+import workspace_management.repository.CustomerRepository;
 import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final WorkspaceRepository workspaceRepository;
+    private final CustomerRepository customerRepository;
     private final ReservationMapper mapper;
 
-    public ReservationService(ReservationRepository reservationRepository, WorkspaceRepository workspaceRepository, ReservationMapper mapper) {
+    public ReservationService(ReservationRepository reservationRepository, WorkspaceRepository workspaceRepository, CustomerRepository customerRepository, ReservationMapper mapper) {
         this.reservationRepository = reservationRepository;
         this.workspaceRepository = workspaceRepository;
+        this.customerRepository = customerRepository;
         this.mapper = mapper;
     }
 
-    public List<IdentifiedReservationDto> getAllReservations() {
-        return reservationRepository.findAll().stream().map(mapper::toIdDto).collect(Collectors.toList());
+    public List<UserResponseDto> getAllReservations() {
+        return reservationRepository.findAll().stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
     }
 
-    public List<IdentifiedReservationDto> getReservationsByCustomerName(String customerName) {
+    public List<UserResponseDto> getReservationsByCustomerName(String customerName) {
         return reservationRepository.findAllByCustomerName(customerName)
-                .stream().map(mapper::toIdDto).collect(Collectors.toList());
+                .stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
     }
 
-    public IdentifiedReservationDto createReservation(ReservationDto reservationDto) throws WorkspaceNotFoundException {
-        if (!workspaceRepository.existsById(reservationDto.getWorkspaceID())) {
-            throw new WorkspaceNotFoundException();
+    @Transactional
+    public UserResponseDto createReservation(RequestDto reservationDto)
+            throws WorkspaceNotFoundException, CustomerNotFoundException, WorkspaceNotAvailableException {
+        if (!customerRepository.existsById(reservationDto.getCustomerName())) {
+            throw new CustomerNotFoundException();
         }
 
-        Reservation reservation = reservationRepository.save(mapper.fromDto(reservationDto));
-        return mapper.toIdDto(reservation);
+        Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
+                .orElseThrow(WorkspaceNotFoundException::new);
+
+        if (!workspace.isAvailable()) {
+            throw new WorkspaceNotAvailableException();
+        }
+
+        Reservation reservation = mapper.fromRequestDto(reservationDto);
+        reservation.setWorkspaceType(workspace.getType());
+
+        reservationRepository.save(reservation);
+        workspace.setAvailable(false);
+        workspaceRepository.save(workspace);
+        return mapper.toUserResponseDto(reservation);
+    }
+
+    @Transactional
+    public UserResponseDto updateReservation(int reservationID, RequestDto requestDto)
+            throws WorkspaceNotFoundException, ReservationNotFoundException, WorkspaceNotAvailableException {
+
+        Reservation reservation = reservationRepository.findById(reservationID)
+                .orElseThrow(ReservationNotFoundException::new);
+        Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
+                .orElseThrow(WorkspaceNotFoundException::new);
+        mapper.updateReservation(reservation, requestDto,
+                workspace.getID(), workspace.getType());
+        if (!workspace.isAvailable()) {
+            throw new WorkspaceNotAvailableException();
+        }
+        workspace.setAvailable(false);
+        workspaceRepository.save(workspace);
+        return mapper.toUserResponseDto(reservationRepository.save(reservation));
+    }
+
+    @Transactional
+    public void deleteReservation(int reservationID) throws ReservationNotFoundException {
+        Reservation reservation = reservationRepository.findById(reservationID)
+                .orElseThrow(ReservationNotFoundException::new);
+        Optional<Workspace> optionalWorkspace = workspaceRepository
+                .findById(reservation.getWorkspaceID());
+
+        optionalWorkspace.ifPresent(workspace -> {
+            workspace.setAvailable(true);
+            workspaceRepository.save(workspace);
+        });
+        reservationRepository.delete(reservation);
     }
 }

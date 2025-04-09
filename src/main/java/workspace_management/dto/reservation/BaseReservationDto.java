@@ -4,20 +4,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-public class ReservationDto {
+public class BaseReservationDto {
     protected int workspaceID;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     protected LocalDateTime start;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     protected LocalDateTime end;
 
-    public ReservationDto(int workspaceID, LocalDateTime start, LocalDateTime end) {
+    public BaseReservationDto(int workspaceID, LocalDateTime start, LocalDateTime end) {
         this.workspaceID = workspaceID;
         this.start = start;
         this.end = end;
     }
 
-    public ReservationDto() {
+    public BaseReservationDto() {
     }
 
     public int getWorkspaceID() {

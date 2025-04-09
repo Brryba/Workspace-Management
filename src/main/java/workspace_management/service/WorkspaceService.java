@@ -2,11 +2,13 @@ package workspace_management.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceMapper;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.WorkspaceNotFoundException;
+import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
 import java.util.List;
@@ -15,12 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
-    public final ApplicationEventPublisher applicationEventPublisher;
+    private final ReservationRepository reservationRepository;
     private final WorkspaceMapper mapper;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository, ApplicationEventPublisher applicationEventPublisher, WorkspaceMapper mapper) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, ReservationRepository reservationRepository, WorkspaceMapper mapper) {
         this.workspaceRepository = workspaceRepository;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.reservationRepository = reservationRepository;
         this.mapper = mapper;
     }
 
@@ -53,6 +55,7 @@ public class WorkspaceService {
         return mapper.toIdDto(workspace);
     }
 
+    @Transactional
     public void deleteWorkspace(int id) throws WorkspaceNotFoundException {
         Workspace workspace = workspaceRepository.getWorkspacesByID(id);
         if (workspace == null) {
@@ -60,5 +63,6 @@ public class WorkspaceService {
         }
 
         workspaceRepository.delete(workspace);
+        reservationRepository.deleteAll(reservationRepository.findAllByWorkspaceID(id));
     }
 }

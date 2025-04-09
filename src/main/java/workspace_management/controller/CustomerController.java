@@ -26,7 +26,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity addCustomer(@RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<?> addCustomer(@RequestBody @Valid CustomerDto customerDto) {
         try {
             customerService.add(customerDto);
             return new ResponseEntity<>(customerDto, HttpStatus.CREATED);

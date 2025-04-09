@@ -10,4 +10,6 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
     List<Reservation> findAllByCustomerName(String customerName);
+
+    List<Reservation> findAllByWorkspaceID(int workspaceID);
 }

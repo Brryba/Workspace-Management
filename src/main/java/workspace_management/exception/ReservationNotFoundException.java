@@ -1,7 +1,7 @@
 package workspace_management.exception;
 
-public class ReservationFoundException extends Exception {
-    public ReservationFoundException() {
+public class ReservationNotFoundException extends Exception {
+    public ReservationNotFoundException() {
         super("Reservation with provided ID was not found");
     }
 }

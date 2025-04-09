@@ -2,13 +2,13 @@ package workspace_management.dto.reservation;
 
 import java.time.LocalDateTime;
 
-public class AdminReservationDto extends IdentifiedReservationDto {
+public class AdminResponseDto extends UserResponseDto {
     private String customerName;
 
-    public AdminReservationDto() {
+    public AdminResponseDto() {
     }
 
-    public AdminReservationDto(String customerName, int workspaceID, LocalDateTime start, LocalDateTime end, int id) {
+    public AdminResponseDto(String customerName, int workspaceID, LocalDateTime start, LocalDateTime end, int id) {
         super(workspaceID, start, end, id);
         this.customerName = customerName;
     }
