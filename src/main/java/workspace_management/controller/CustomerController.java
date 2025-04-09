@@ -4,8 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
-import workspace_management.dto.CustomerDto;
+import workspace_management.dto.customer.CustomerDto;
 import workspace_management.exception.CustomerExistsException;
 import workspace_management.service.CustomerService;
 
@@ -27,10 +26,10 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addCustomer(@RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity addCustomer(@RequestBody @Valid CustomerDto customerDto) {
         try {
             customerService.add(customerDto);
-            return new ResponseEntity<>("Customer was added", HttpStatus.CREATED);
+            return new ResponseEntity<>(customerDto, HttpStatus.CREATED);
         } catch (CustomerExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }

@@ -1,78 +1,70 @@
-/*package workspace_management.service;
+package workspace_management.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import workspace_management.dto.WorkspaceDto;
-import workspace_management.event.WorkspaceDeletedEvent;
-import workspace_management.model.Workspace;
+import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
+import workspace_management.dto.workspace.WorkspaceDto;
+import workspace_management.dto.workspace.WorkspaceMapper;
+import workspace_management.entity.Workspace;
+import workspace_management.exception.WorkspaceNotFoundException;
 import workspace_management.repository.WorkspaceRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     public final ApplicationEventPublisher applicationEventPublisher;
+    private final WorkspaceMapper mapper;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository, ApplicationEventPublisher applicationEventPublisher) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, ApplicationEventPublisher applicationEventPublisher, WorkspaceMapper mapper) {
         this.workspaceRepository = workspaceRepository;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.mapper = mapper;
     }
 
-    public void addWorkspace(String type, double price, boolean isAvailable) {
-        Workspace workspace = new Workspace();
-        workspace.setType(type);
-        workspace.setPrice(price);
-        workspace.setAvailable(isAvailable);
-        workspaceRepository.persistWorkspace(workspace);
+    public List<IdentifiedWorkspaceDto> getAllWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository.findAll();
+        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
     }
 
-    public List<Workspace> getAllWorkspaces() {
-        return workspaceRepository.getAllWorkspaces();
+    public List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository
+                .findWorkspacesByisAvailable(true);
+        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
     }
 
-    public List<Workspace> getAvailableWorkspaces() {
-        return workspaceRepository.getAvailableWorkspaces();
+    public IdentifiedWorkspaceDto createWorkspace(WorkspaceDto workspaceDto) {
+        Workspace workspace = mapper.fromDto(workspaceDto);
+        workspace = workspaceRepository.save(workspace);
+        return mapper.toIdDto(workspace);
     }
 
-    public Workspace getWorkspace(int workspaceID) {
-        return workspaceRepository.getWorkspace(workspaceID);
+    public IdentifiedWorkspaceDto updateWorkspace(int id, WorkspaceDto workspaceDto)
+            throws WorkspaceNotFoundException {
+
+        Workspace workspace = workspaceRepository.getWorkspacesByID(id);
+        if (workspace == null) {
+            throw new WorkspaceNotFoundException();
+        }
+        this.setWorkspace(workspace, workspaceDto);
+        workspace = workspaceRepository.save(workspace);
+        return mapper.toIdDto(workspace);
     }
 
-    public boolean containsWorkspace(int workspaceId) {
-        return workspaceRepository.containsWorkspace(workspaceId);
+    public void deleteWorkspace(int id) throws WorkspaceNotFoundException {
+        Workspace workspace = workspaceRepository.getWorkspacesByID(id);
+        if (workspace == null) {
+            throw new WorkspaceNotFoundException();
+        }
+
+        workspaceRepository.delete(workspace);
     }
 
-    public void updateWorkspace(int workspaceId, String type) {
-        Workspace workspace = workspaceRepository.getWorkspace(workspaceId);
-        workspace.setType(type);
-        workspaceRepository.persistWorkspace(workspace);
-    }
-
-    public void updateWorkspace(int workspaceId, double price) {
-        Workspace workspace = workspaceRepository.getWorkspace(workspaceId);
-        workspace.setPrice(price);
-        workspaceRepository.persistWorkspace(workspace);
-    }
-
-    public void updateWorkspace(int workspaceId, boolean isAvailable) {
-        Workspace workspace = workspaceRepository.getWorkspace(workspaceId);
-        workspace.setAvailable(isAvailable);
-        workspaceRepository.persistWorkspace(workspace);
-    }
-
-    public void deleteWorkspace(int workspaceID) {
-        applicationEventPublisher.publishEvent(new WorkspaceDeletedEvent(this, workspaceID));
-        workspaceRepository.removeWorkspace(workspaceID);
-    }
-
-    public void updateWorkspace(WorkspaceDto workspaceDto) {
-        Workspace workspace = new Workspace(workspaceDto.getId(),
-                workspaceDto.getType(),
-                new BigDecimal(workspaceDto.getPrice()),
-                workspaceDto.isAvailable());
-        workspaceRepository.updateWorkspace(workspace);
+    private void setWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
+        workspace.setType(workspaceDto.getType());
+        workspace.setPrice(workspaceDto.getPrice());
+        workspace.setAvailable(workspaceDto.isAvailable());
     }
 }
-*/

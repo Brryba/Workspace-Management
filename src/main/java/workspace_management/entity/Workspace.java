@@ -1,11 +1,9 @@
 package workspace_management.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Name;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Entity
 @Table(name = "workspace")
@@ -15,14 +13,13 @@ public class Workspace implements Serializable {
     private int ID;
     private String type;
     private BigDecimal price;
-    @Column(name = "IsAvailable", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isAvailable = true;
 
     public Workspace() {
     }
 
-    public Workspace(int ID, String type, BigDecimal price, boolean isAvailable) {
-        this.ID = ID;
+    public Workspace(String type, BigDecimal price, boolean isAvailable) {
         this.type = type;
         this.price = price;
         this.isAvailable = isAvailable;
@@ -48,8 +45,8 @@ public class Workspace implements Serializable {
         this.type = type;
     }
 
-    public void setPrice(double price) {
-        this.price = new BigDecimal(price).setScale(2, RoundingMode.HALF_DOWN);
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public void setAvailable(boolean isAvailable) {

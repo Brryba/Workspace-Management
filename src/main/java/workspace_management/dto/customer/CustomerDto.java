@@ -1,4 +1,4 @@
-package workspace_management.dto;
+package workspace_management.dto.customer;
 
 import jakarta.validation.constraints.Size;
 

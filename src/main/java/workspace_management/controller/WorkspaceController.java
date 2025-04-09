@@ -1,17 +1,19 @@
-/*package workspace_management.controller;
+package workspace_management.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import workspace_management.dto.WorkspaceDto;
-import workspace_management.model.Workspace;
+import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
+import workspace_management.dto.workspace.WorkspaceDto;
+import workspace_management.exception.WorkspaceNotFoundException;
 import workspace_management.service.WorkspaceService;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/workspace")
+@RequestMapping("/api/workspace")
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
@@ -19,46 +21,45 @@ public class WorkspaceController {
         this.workspaceService = workspaceService;
     }
 
-    @GetMapping("/create")
-    public String createWorkspace(Model model) {
-        model.addAttribute("workspaceInfo", new WorkspaceDto());
-        return "workspace-update";
-    }
-
     @GetMapping
-    public String getWorkspace(@RequestParam(name="id") Integer id, Model model) {
-        Workspace workspace = workspaceService.getWorkspace(id);
-        model.addAttribute("workspaceInfo",
-                new WorkspaceDto(workspace.getID(), workspace.getType(),
-                        workspace.getPrice().toString(), workspace.isAvailable(), true));
-        return "workspace-update";
+    ResponseEntity<List<IdentifiedWorkspaceDto>> getAllWorkspaces() {
+        List<IdentifiedWorkspaceDto> workspaces = workspaceService.getAllWorkspaces();
+        return new ResponseEntity<>(workspaces,
+                HttpStatus.OK);
     }
 
-    @PostMapping("/edit")
-    public String updateWorkspace(@ModelAttribute(name = "workspaceInfo")
-                                      @Valid WorkspaceDto workspaceInfo, BindingResult result,
-                                  RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            return "workspace-update";
-        }
-
-        if (workspaceService.containsWorkspace(workspaceInfo.getId())) {
-            workspaceService.updateWorkspace(workspaceInfo);
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Workspace not exists");
-        }
-
-        return "redirect:/admin";
+    @GetMapping("/available")
+    ResponseEntity<List<IdentifiedWorkspaceDto>> getAvailableWorkspaces() {
+        return new ResponseEntity<>(workspaceService.getAvailableWorkspaces(),
+                HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public String deleteWorkspace(@RequestParam(name = "id") int workspaceID, RedirectAttributes redirectAttributes) {
-        if (workspaceService.containsWorkspace(workspaceID)) {
-            workspaceService.deleteWorkspace(workspaceID);
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Workspace does not exist");
+    @PostMapping
+    ResponseEntity<IdentifiedWorkspaceDto> insertWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto) {
+        return new ResponseEntity<>(workspaceService.createWorkspace(workspaceDto),
+                HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<IdentifiedWorkspaceDto> updateWorkspace
+            (@PathVariable("id") int workspaceId,
+             @Valid @RequestBody WorkspaceDto workspaceDto) {
+        try {
+            return new ResponseEntity<>(workspaceService.updateWorkspace(workspaceId,
+                    workspaceDto), HttpStatus.OK);
+        } catch (WorkspaceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return "redirect:/admin";
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<?> deleteWorkspace(@PathVariable("id") int workspaceId) {
+        try {
+            workspaceService.deleteWorkspace(workspaceId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (WorkspaceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
-*/

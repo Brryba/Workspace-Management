@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import workspace_management.dto.CustomerDto;
+import workspace_management.dto.customer.CustomerDto;
 import workspace_management.dto.ReservationDto;
 import workspace_management.model.Reservation;
 import workspace_management.repository.ReservationRepository;
