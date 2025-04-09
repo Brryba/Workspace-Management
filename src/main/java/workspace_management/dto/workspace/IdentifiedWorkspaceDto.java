@@ -1,9 +1,12 @@
 package workspace_management.dto.workspace;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 public class IdentifiedWorkspaceDto extends WorkspaceDto {
-    public int id;
+    @NotNull
+    protected int id;
 
     public IdentifiedWorkspaceDto() {
     }

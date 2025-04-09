@@ -1,69 +1,27 @@
-/*package workspace_management.service;
+package workspace_management.service;
 
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
-import workspace_management.dto.ReservationDto;
-import workspace_management.event.WorkspaceDeletedEvent;
-import workspace_management.model.Reservation;
+import workspace_management.dto.reservation.IdentifiedReservationDto;
+import workspace_management.dto.reservation.ReservationMapper;
 import workspace_management.repository.ReservationRepository;
+import workspace_management.repository.WorkspaceRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class ReservationService implements ApplicationListener<WorkspaceDeletedEvent> {
+public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final WorkspaceService workspaceService;
+    private final WorkspaceRepository workspaceRepository;
+    private final ReservationMapper mapper;
 
-    public ReservationService(ReservationRepository reservationRepository, WorkspaceService workspaceService) {
+    public ReservationService(ReservationRepository reservationRepository, WorkspaceRepository workspaceRepository, ReservationMapper mapper) {
         this.reservationRepository = reservationRepository;
-        this.workspaceService = workspaceService;
+        this.workspaceRepository = workspaceRepository;
+        this.mapper = mapper;
     }
 
-    public void createNewReservation(String customerName, int workspaceID,
-                                     LocalDateTime startDate, LocalDateTime endDate) {
-        Reservation reservation = new Reservation(customerName, workspaceID, startDate, endDate);
-        reservation.setWorkspaceType(workspaceService.getWorkspace(workspaceID).getType());
-        reservationRepository.insertReservation(reservation);
-        workspaceService.updateWorkspace(workspaceID, false);
-    }
-
-    public void createNewReservation(ReservationDto reservationDto) {
-        Reservation reservation = new Reservation(reservationDto.getCustomerName(), reservationDto.getWorkspaceID(),
-                reservationDto.getStart(), reservationDto.getEnd());
-        reservation.setWorkspaceType(workspaceService.getWorkspace(reservationDto.getWorkspaceID()).getType());
-        reservationRepository.insertReservation(reservation);
-        workspaceService.updateWorkspace(reservation.getWorkspaceID(), false);
-    }
-
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.getReservations();
-    }
-
-    public List<Reservation> getReservations(String customerName) {
-        return reservationRepository.getReservations(customerName);
-    }
-
-    public void deleteReservationConnectedToWorkspace(int workspaceID) {
-        reservationRepository.getReservationByWorkspaceID(workspaceID)
-                .ifPresent(reservationRepository::deleteReservation);
-    }
-
-    public void deleteReservation(int reservationID) {
-        Reservation reservation = reservationRepository.getReservation(reservationID).get();
-        workspaceService.updateWorkspace(reservation.getWorkspaceID(), true);
-        reservationRepository.deleteReservation(reservation);
-    }
-
-    public void deleteReservation(ReservationDto reservationDto) {
-        Reservation reservation = new Reservation();
-        reservation.setCustomerName(reservationDto.getCustomerName());
-        reservationRepository.deleteReservation(reservation);
-    }
-
-    @Override
-    public void onApplicationEvent(WorkspaceDeletedEvent event) {
-        deleteReservationConnectedToWorkspace(event.getWorkspaceID());
+    public List<IdentifiedReservationDto> getAllReservations() {
+        return reservationRepository.findAll().stream().map(mapper::toIdDto).collect(Collectors.toList());
     }
 }
-*/

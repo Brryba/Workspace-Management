@@ -48,7 +48,7 @@ public class WorkspaceService {
         if (workspace == null) {
             throw new WorkspaceNotFoundException();
         }
-        this.setWorkspace(workspace, workspaceDto);
+        mapper.updateWorkspace(workspace, workspaceDto);
         workspace = workspaceRepository.save(workspace);
         return mapper.toIdDto(workspace);
     }
@@ -60,11 +60,5 @@ public class WorkspaceService {
         }
 
         workspaceRepository.delete(workspace);
-    }
-
-    private void setWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
-        workspace.setType(workspaceDto.getType());
-        workspace.setPrice(workspaceDto.getPrice());
-        workspace.setAvailable(workspaceDto.isAvailable());
     }
 }

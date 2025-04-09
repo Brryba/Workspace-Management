@@ -1,29 +1,23 @@
-package workspace_management.dto;
+package workspace_management.dto.reservation;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 public class ReservationDto {
-    private String customerName;
-    private int workspaceID;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    protected int workspaceID;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    protected LocalDateTime start;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    protected LocalDateTime end;
 
-    public ReservationDto(String customerName, int workspaceID, LocalDateTime start, LocalDateTime end) {
-        this.customerName = customerName;
+    public ReservationDto(int workspaceID, LocalDateTime start, LocalDateTime end) {
         this.workspaceID = workspaceID;
         this.start = start;
         this.end = end;
     }
 
     public ReservationDto() {
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
     }
 
     public int getWorkspaceID() {

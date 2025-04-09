@@ -13,4 +13,10 @@ public class WorkspaceMapper {
     public Workspace fromDto(WorkspaceDto workspaceDto) {
         return new Workspace(workspaceDto.getType(), workspaceDto.getPrice(), workspaceDto.isAvailable());
     }
+
+    public void updateWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
+        workspace.setType(workspaceDto.getType());
+        workspace.setPrice(workspaceDto.getPrice());
+        workspace.setAvailable(workspaceDto.isAvailable());
+    }
 }
