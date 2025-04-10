@@ -1,31 +1,18 @@
 package workspace_management.dto.reservation;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import workspace_management.entity.Reservation;
 
-@Component
-public class ReservationMapper {
-    public UserResponseDto toUserResponseDto(Reservation reservation) {
-        return new UserResponseDto(reservation.getReservationID(),
-                reservation.getStart(), reservation.getEnd(), reservation.getWorkspaceID());
-    }
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface ReservationMapper {
+    UserResponseDto toUserResponseDto(Reservation reservation);
 
-    public AdminResponseDto toResponseAdminDto(Reservation reservation) {
-        return new AdminResponseDto(reservation.getCustomerName(),
-                reservation.getReservationID(), reservation.getStart(),
-                reservation.getEnd(), reservation.getWorkspaceID());
-    }
+    AdminResponseDto toResponseAdminDto(Reservation reservation);
 
-    public Reservation fromRequestDto(RequestDto dto) {
-        Reservation reservation = new Reservation();
-        reservation.setWorkspaceID(dto.getWorkspaceID());
-        reservation.setStart(dto.getStart());
-        reservation.setEnd(dto.getEnd());
-        reservation.setCustomerName(dto.getCustomerName());
-        return reservation;
-    }
+    Reservation fromRequestDto(RequestDto dto);
 
-    public void updateReservation(Reservation reservation, RequestDto dto,
+    default void updateReservation(Reservation reservation, RequestDto dto,
                                   int workspaceID, String workspaceType) {
         reservation.setStart(dto.getStart());
         reservation.setEnd(dto.getEnd());

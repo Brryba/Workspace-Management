@@ -1,20 +1,16 @@
 package workspace_management.dto.workspace;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import workspace_management.entity.Workspace;
 
-@Component
-public class WorkspaceMapper {
-    public IdentifiedWorkspaceDto toIdDto(Workspace workspace) {
-        return new IdentifiedWorkspaceDto(workspace.getID(), workspace.getType(),
-                workspace.getPrice(), workspace.isAvailable());
-    }
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface WorkspaceMapper {
+    IdentifiedWorkspaceDto toIdDto(Workspace workspace);
 
-    public Workspace fromDto(WorkspaceDto workspaceDto) {
-        return new Workspace(workspaceDto.getType(), workspaceDto.getPrice(), workspaceDto.isAvailable());
-    }
+    Workspace fromDto(WorkspaceDto workspaceDto);
 
-    public void updateWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
+    default void updateWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
         workspace.setType(workspaceDto.getType());
         workspace.setPrice(workspaceDto.getPrice());
         workspace.setAvailable(workspaceDto.isAvailable());

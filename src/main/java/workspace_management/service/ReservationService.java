@@ -77,7 +77,7 @@ public class ReservationService {
         }
 
         mapper.updateReservation(reservation, requestDto,
-                workspace.getID(), workspace.getType());
+                workspace.getId(), workspace.getType());
         workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservationRepository.save(reservation));

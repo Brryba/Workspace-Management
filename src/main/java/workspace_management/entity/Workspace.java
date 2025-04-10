@@ -15,16 +15,10 @@ import java.math.BigDecimal;
 public class Workspace implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
+    private int id;
     private String type;
     private BigDecimal price;
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private boolean isAvailable;
-
-    public Workspace(String type, BigDecimal price, boolean isAvailable) {
-        this.type = type;
-        this.price = price;
-        this.isAvailable = isAvailable;
-    }
+    private boolean available;
 }
 

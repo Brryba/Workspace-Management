@@ -1,6 +1,5 @@
 package workspace_management.service;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
@@ -33,7 +32,7 @@ public class WorkspaceService {
 
     public List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
         List<Workspace> workspaces = workspaceRepository
-                .findWorkspacesByisAvailable(true);
+                .findWorkspacesByAvailable(true);
         return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
     }
 
@@ -46,7 +45,7 @@ public class WorkspaceService {
     public IdentifiedWorkspaceDto updateWorkspace(int id, WorkspaceDto workspaceDto)
             throws WorkspaceNotFoundException {
 
-        Workspace workspace = workspaceRepository.getWorkspacesByID(id);
+        Workspace workspace = workspaceRepository.getWorkspacesById(id);
         if (workspace == null) {
             throw new WorkspaceNotFoundException();
         }
@@ -57,7 +56,7 @@ public class WorkspaceService {
 
     @Transactional
     public void deleteWorkspace(int id) throws WorkspaceNotFoundException {
-        Workspace workspace = workspaceRepository.getWorkspacesByID(id);
+        Workspace workspace = workspaceRepository.getWorkspacesById(id);
         if (workspace == null) {
             throw new WorkspaceNotFoundException();
         }
