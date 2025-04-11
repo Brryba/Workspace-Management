@@ -1,9 +1,17 @@
 package workspace_management.service;
 
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import workspace_management.dto.customer.CustomerDto;
 import workspace_management.dto.customer.CustomerMapper;
 import workspace_management.entity.Customer;
+import workspace_management.enums.Roles;
 import workspace_management.exception.CustomerExistsException;
 import workspace_management.repository.CustomerRepository;
 
@@ -11,14 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService {
-    private final CustomerRepository customerRepository;
-    private final CustomerMapper mapper;
-
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
-        this.customerRepository = customerRepository;
-        this.mapper = customerMapper;
-    }
+@NoArgsConstructor
+public class CustomerService implements UserDetailsService {
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerMapper mapper;
+    @Autowired
+    private PasswordEncoder encoder;
 
     public List<CustomerDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
@@ -29,7 +37,19 @@ public class CustomerService {
         if (customerRepository.existsById(customerDto.getName())) {
             throw new CustomerExistsException();
         }
-        Customer customer = mapper.fromDto(customerDto);
+        Customer customer = new Customer();
+        customer.setName(customerDto.getName());
+        customer.setPassword(encoder.encode(customerDto.getPassword()));
+        customer.setRole(Roles.ROLE_USER);
         customerRepository.save(customer);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Customer customer = customerRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException(username));
+
+        return new User(customer.getUsername(),
+                customer.getPassword(),
+                customer.getAuthorities());
     }
 }

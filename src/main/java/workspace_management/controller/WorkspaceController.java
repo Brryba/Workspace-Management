@@ -3,6 +3,7 @@ package workspace_management.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
@@ -23,6 +24,7 @@ public class WorkspaceController {
 
     @GetMapping
     ResponseEntity<List<IdentifiedWorkspaceDto>> getAllWorkspaces() {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
         List<IdentifiedWorkspaceDto> workspaces = workspaceService.getAllWorkspaces();
         return new ResponseEntity<>(workspaces,
                 HttpStatus.OK);

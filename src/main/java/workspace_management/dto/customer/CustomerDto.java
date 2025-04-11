@@ -8,4 +8,6 @@ import lombok.Setter;
 public class CustomerDto {
     @Size(min = 1, max = 100, message = "Name must not be empty")
     private String name;
+    @Size(min = 1, max = 100)
+    private String password;
 }
