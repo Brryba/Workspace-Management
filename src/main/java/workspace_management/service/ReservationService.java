@@ -1,53 +1,99 @@
 package workspace_management.service;
 
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
-import workspace_management.event.WorkspaceDeletedEvent;
-import workspace_management.model.Reservation;
+import org.springframework.transaction.annotation.Transactional;
+import workspace_management.dto.reservation.*;
+import workspace_management.entity.Reservation;
+import workspace_management.entity.Workspace;
+import workspace_management.exception.CustomerNotFoundException;
+import workspace_management.exception.ReservationNotFoundException;
+import workspace_management.exception.WorkspaceNotAvailableException;
+import workspace_management.exception.WorkspaceNotFoundException;
+import workspace_management.repository.CustomerRepository;
 import workspace_management.repository.ReservationRepository;
+import workspace_management.repository.WorkspaceRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class ReservationService implements ApplicationListener<WorkspaceDeletedEvent> {
+public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final WorkspaceService workspaceService;
+    private final WorkspaceRepository workspaceRepository;
+    private final CustomerRepository customerRepository;
+    private final ReservationMapper mapper;
 
-    public ReservationService(ReservationRepository reservationRepository, WorkspaceService workspaceService) {
+    public ReservationService(ReservationRepository reservationRepository, WorkspaceRepository workspaceRepository, CustomerRepository customerRepository, ReservationMapper mapper) {
         this.reservationRepository = reservationRepository;
-        this.workspaceService = workspaceService;
+        this.workspaceRepository = workspaceRepository;
+        this.customerRepository = customerRepository;
+        this.mapper = mapper;
     }
 
-    public void createNewReservation(String customerName, int workspaceID,
-                                     LocalDateTime startDate, LocalDateTime endDate) {
-        Reservation reservation = new Reservation(customerName, workspaceID, startDate, endDate);
-        reservation.setWorkspaceType(workspaceService.getWorkspace(workspaceID).getType());
-        reservationRepository.insertReservation(reservation);
-        workspaceService.updateWorkspace(workspaceID, false);
+    public List<AdminResponseDto> getAllReservations() {
+        return reservationRepository.findAll().stream().map(mapper::toResponseAdminDto).collect(Collectors.toList());
     }
 
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.getReservations();
+    public List<UserResponseDto> getReservationsByCustomerName(String customerName) {
+        return reservationRepository.findAllByCustomerName(customerName)
+                .stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
     }
 
-    public List<Reservation> getReservations(String customerName) {
-        return reservationRepository.getReservations(customerName);
+    @Transactional
+    public UserResponseDto createReservation(RequestDto reservationDto)
+            throws WorkspaceNotFoundException, CustomerNotFoundException, WorkspaceNotAvailableException {
+        if (!customerRepository.existsById(reservationDto.getCustomerName())) {
+            throw new CustomerNotFoundException();
+        }
+
+        Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
+                .orElseThrow(WorkspaceNotFoundException::new);
+
+        if (!workspace.isAvailable()) {
+            throw new WorkspaceNotAvailableException();
+        }
+
+        Reservation reservation = mapper.fromRequestDto(reservationDto);
+        reservation.setWorkspaceType(workspace.getType());
+
+        reservationRepository.save(reservation);
+        workspace.setAvailable(false);
+        workspaceRepository.save(workspace);
+        return mapper.toUserResponseDto(reservation);
     }
 
-    public void deleteReservationConnectedToWorkspace(int workspaceID) {
-        reservationRepository.getReservationByWorkspaceID(workspaceID)
-                .ifPresent(reservationRepository::deleteReservation);
+    @Transactional
+    public UserResponseDto updateReservation(int reservationID, RequestDto requestDto)
+            throws WorkspaceNotFoundException, ReservationNotFoundException, WorkspaceNotAvailableException {
+
+        Reservation reservation = reservationRepository.findById(reservationID)
+                .orElseThrow(ReservationNotFoundException::new);
+        Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
+                .orElseThrow(WorkspaceNotFoundException::new);
+        if (!workspace.isAvailable() && reservation.getWorkspaceID()
+                != requestDto.getWorkspaceID()) {
+            throw new WorkspaceNotAvailableException();
+        }
+
+        mapper.updateReservation(reservation, requestDto,
+                workspace.getId(), workspace.getType());
+        workspace.setAvailable(false);
+        workspaceRepository.save(workspace);
+        return mapper.toUserResponseDto(reservationRepository.save(reservation));
     }
 
-    public void deleteReservation(int reservationID) {
-        Reservation reservation = reservationRepository.getReservation(reservationID).get();
-        workspaceService.updateWorkspace(reservation.getWorkspaceID(), true);
-        reservationRepository.deleteReservation(reservation);
-    }
+    @Transactional
+    public void deleteReservation(int reservationID) throws ReservationNotFoundException {
+        Reservation reservation = reservationRepository.findById(reservationID)
+                .orElseThrow(ReservationNotFoundException::new);
+        Optional<Workspace> optionalWorkspace = workspaceRepository
+                .findById(reservation.getWorkspaceID());
 
-    @Override
-    public void onApplicationEvent(WorkspaceDeletedEvent event) {
-        deleteReservationConnectedToWorkspace(event.getWorkspaceID());
+        optionalWorkspace.ifPresent(workspace -> {
+            workspace.setAvailable(true);
+            workspaceRepository.save(workspace);
+        });
+        reservationRepository.delete(reservation);
     }
 }
