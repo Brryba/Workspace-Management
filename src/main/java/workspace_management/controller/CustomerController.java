@@ -1,11 +1,16 @@
 package workspace_management.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import workspace_management.dto.customer.CustomerDto;
+import workspace_management.dto.customer.CustomerRequestDto;
+import workspace_management.dto.customer.CustomerResponseDto;
+import workspace_management.entity.Customer;
 import workspace_management.exception.CustomerExistsException;
+import workspace_management.repository.CustomerRepository;
 import workspace_management.service.CustomerService;
 
 import java.util.List;
@@ -20,16 +25,16 @@ public class CustomerController {
     }
 
     @GetMapping
-    ResponseEntity<List<CustomerDto>> getCustomers() {
-        List<CustomerDto> customers = customerService.getAllCustomers();
+    ResponseEntity<List<CustomerResponseDto>> getCustomers() {
+        List<CustomerResponseDto> customers = customerService.getAllCustomers();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> addCustomer(@RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<?> addCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto) {
         try {
-            customerService.add(customerDto);
-            return new ResponseEntity<>(customerDto, HttpStatus.CREATED);
+            customerService.add(customerRequestDto);
+            return new ResponseEntity<>(customerRequestDto, HttpStatus.CREATED);
         } catch (CustomerExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }

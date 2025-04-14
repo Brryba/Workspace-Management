@@ -1,15 +1,11 @@
 package workspace_management.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import workspace_management.enums.Roles;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +19,14 @@ public class Customer implements UserDetails {
     @Column(name = "name")
     private String name;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Roles role;
+
+    public enum Roles {
+        ROLE_ADMIN,
+        ROLE_USER
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

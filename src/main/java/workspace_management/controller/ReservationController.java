@@ -16,7 +16,7 @@ import workspace_management.service.ReservationService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("api/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
 

@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import workspace_management.dto.customer.CustomerDto;
+import workspace_management.dto.customer.CustomerRequestDto;
 import workspace_management.dto.customer.CustomerMapper;
+import workspace_management.dto.customer.CustomerResponseDto;
 import workspace_management.entity.Customer;
-import workspace_management.enums.Roles;
 import workspace_management.exception.CustomerExistsException;
 import workspace_management.repository.CustomerRepository;
 
@@ -28,19 +28,19 @@ public class CustomerService implements UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public List<CustomerDto> getAllCustomers() {
+    public List<CustomerResponseDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
         return customers.stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    public void add(CustomerDto customerDto) throws CustomerExistsException {
-        if (customerRepository.existsById(customerDto.getName())) {
+    public void add(CustomerRequestDto customerRequestDto) throws CustomerExistsException {
+        if (customerRepository.existsById(customerRequestDto.getName())) {
             throw new CustomerExistsException();
         }
         Customer customer = new Customer();
-        customer.setName(customerDto.getName());
-        customer.setPassword(encoder.encode(customerDto.getPassword()));
-        customer.setRole(Roles.ROLE_USER);
+        customer.setName(customerRequestDto.getName());
+        customer.setPassword(encoder.encode(customerRequestDto.getPassword()));
+        customer.setRole(Customer.Roles.ROLE_USER);
         customerRepository.save(customer);
     }
 
