@@ -5,7 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import workspace_management.dto.reservation.*;
 import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
-import workspace_management.exception.*;
+import workspace_management.exception.CustomerNotFoundException;
+import workspace_management.exception.ReservationNotFoundException;
+import workspace_management.exception.WorkspaceNotAvailableException;
+import workspace_management.exception.WorkspaceNotFoundException;
 import workspace_management.repository.CustomerRepository;
 import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
@@ -38,8 +41,9 @@ public class ReservationService {
     }
 
     @Transactional
-    public UserResponseDto createReservation(BaseReservationDto reservationDto, String customerName) {
-        if (!customerRepository.existsById(customerName)) {
+    public UserResponseDto createReservation(RequestDto reservationDto)
+            throws WorkspaceNotFoundException, CustomerNotFoundException, WorkspaceNotAvailableException {
+        if (!customerRepository.existsById(reservationDto.getCustomerName())) {
             throw new CustomerNotFoundException();
         }
 
@@ -51,8 +55,6 @@ public class ReservationService {
         }
 
         Reservation reservation = mapper.fromRequestDto(reservationDto);
-        reservation.setCustomerName(customerName);
-
         reservation.setWorkspaceType(workspace.getType());
 
         reservationRepository.save(reservation);
@@ -62,17 +64,11 @@ public class ReservationService {
     }
 
     @Transactional
-    public UserResponseDto updateReservation(int reservationID, BaseReservationDto requestDto,
-                                             String customerName)
-           {
+    public UserResponseDto updateReservation(int reservationID, RequestDto requestDto)
+            throws WorkspaceNotFoundException, ReservationNotFoundException, WorkspaceNotAvailableException {
 
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
-
-        if (!reservation.getCustomerName().equals(customerName)) {
-            throw new WrongCustomerException();
-        }
-
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
         if (!workspace.isAvailable() && reservation.getWorkspaceID()
@@ -88,15 +84,9 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteReservation(int reservationID, String customerName) {
+    public void deleteReservation(int reservationID) throws ReservationNotFoundException {
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
-
-
-        if (!reservation.getCustomerName().equals(customerName)) {
-            throw new WrongCustomerException();
-        }
-
         Optional<Workspace> optionalWorkspace = workspaceRepository
                 .findById(reservation.getWorkspaceID());
 

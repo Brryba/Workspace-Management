@@ -6,5 +6,7 @@ import workspace_management.entity.Customer;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CustomerMapper {
-    CustomerResponseDto toDto(Customer customer);
+    CustomerDto toDto(Customer customer);
+
+    Customer fromDto(CustomerDto customerDto);
 }

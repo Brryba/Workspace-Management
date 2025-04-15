@@ -10,9 +10,9 @@ public interface ReservationMapper {
 
     AdminResponseDto toResponseAdminDto(Reservation reservation);
 
-    Reservation fromRequestDto(BaseReservationDto dto);
+    Reservation fromRequestDto(RequestDto dto);
 
-    default void updateReservation(Reservation reservation, BaseReservationDto dto,
+    default void updateReservation(Reservation reservation, RequestDto dto,
                                   int workspaceID, String workspaceType) {
         reservation.setStart(dto.getStart());
         reservation.setEnd(dto.getEnd());

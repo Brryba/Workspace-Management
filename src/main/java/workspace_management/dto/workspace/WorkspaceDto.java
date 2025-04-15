@@ -14,11 +14,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkspaceDto {
-    @NotBlank(message = "Workspace type cannot be empty")
-    @Size(min = 1, max = 50, message = "Workspace type must be between 1-50 characters")
+    @NotBlank(message = "type must not be empty")
+    @Size(min = 1, max = 50, message = "type length should not be bigger than 50")
     protected String type;
-
-    @Digits(integer = 10, fraction = 2, message = "Price must have maximum 2 decimal places")
+    @Digits(integer = 10, fraction = 2, message = "Can not have more than 99 cents")
     protected BigDecimal price;
     protected boolean available;
 }

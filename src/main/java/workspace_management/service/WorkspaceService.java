@@ -42,7 +42,8 @@ public class WorkspaceService {
         return mapper.toIdDto(workspace);
     }
 
-    public IdentifiedWorkspaceDto updateWorkspace(int id, WorkspaceDto workspaceDto) {
+    public IdentifiedWorkspaceDto updateWorkspace(int id, WorkspaceDto workspaceDto)
+            throws WorkspaceNotFoundException {
 
         Workspace workspace = workspaceRepository.getWorkspacesById(id);
         if (workspace == null) {
@@ -54,7 +55,7 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void deleteWorkspace(int id) {
+    public void deleteWorkspace(int id) throws WorkspaceNotFoundException {
         Workspace workspace = workspaceRepository.getWorkspacesById(id);
         if (workspace == null) {
             throw new WorkspaceNotFoundException();
