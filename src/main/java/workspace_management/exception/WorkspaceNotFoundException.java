@@ -1,6 +1,6 @@
 package workspace_management.exception;
 
-public class WorkspaceNotFoundException extends Exception {
+public class WorkspaceNotFoundException extends RuntimeException {
     public WorkspaceNotFoundException() {
         super("Workspace with provided ID was not found");
     }

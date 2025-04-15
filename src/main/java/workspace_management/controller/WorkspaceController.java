@@ -2,17 +2,13 @@ package workspace_management.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceDto;
-import workspace_management.exception.WorkspaceNotFoundException;
 import workspace_management.service.WorkspaceService;
-
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/workspace")
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
@@ -22,44 +18,32 @@ public class WorkspaceController {
     }
 
     @GetMapping
-    ResponseEntity<List<IdentifiedWorkspaceDto>> getAllWorkspaces() {
-        List<IdentifiedWorkspaceDto> workspaces = workspaceService.getAllWorkspaces();
-        return new ResponseEntity<>(workspaces,
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    List<IdentifiedWorkspaceDto> getAllWorkspaces() {
+        return workspaceService.getAllWorkspaces();
     }
 
     @GetMapping("/available")
-    ResponseEntity<List<IdentifiedWorkspaceDto>> getAvailableWorkspaces() {
-        return new ResponseEntity<>(workspaceService.getAvailableWorkspaces(),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
+        return workspaceService.getAvailableWorkspaces();
     }
 
     @PostMapping
-    ResponseEntity<IdentifiedWorkspaceDto> insertWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto) {
-        return new ResponseEntity<>(workspaceService.createWorkspace(workspaceDto),
-                HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    IdentifiedWorkspaceDto insertWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto) {
+        return workspaceService.createWorkspace(workspaceDto);
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<IdentifiedWorkspaceDto> updateWorkspace
-            (@PathVariable("id") int workspaceId,
-             @Valid @RequestBody WorkspaceDto workspaceDto) {
-        try {
-            return new ResponseEntity<>(workspaceService.updateWorkspace(workspaceId,
-                    workspaceDto), HttpStatus.OK);
-        } catch (WorkspaceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    IdentifiedWorkspaceDto updateWorkspace(@PathVariable("id") int workspaceId, @Valid @RequestBody WorkspaceDto workspaceDto) {
+        return workspaceService.updateWorkspace(workspaceId, workspaceDto);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> deleteWorkspace(@PathVariable("id") int workspaceId) {
-        try {
-            workspaceService.deleteWorkspace(workspaceId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (WorkspaceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteWorkspace(@PathVariable("id") int workspaceId) {
+        workspaceService.deleteWorkspace(workspaceId);
     }
 }
