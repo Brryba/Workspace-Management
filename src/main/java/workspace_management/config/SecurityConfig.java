@@ -44,6 +44,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/workspace/available").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/workspace", "api/workspace/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reservation").hasRole("ADMIN")
+                        .requestMatchers("/api/reservation/**", "/api/reservation").hasRole("USER")
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

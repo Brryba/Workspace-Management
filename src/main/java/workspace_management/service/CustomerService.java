@@ -33,7 +33,7 @@ public class CustomerService implements UserDetailsService {
         return customers.stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    public void add(CustomerRequestDto customerRequestDto) {
+    public CustomerResponseDto add(CustomerRequestDto customerRequestDto) {
         if (customerRepository.existsById(customerRequestDto.getName())) {
             throw new CustomerExistsException();
         }
@@ -42,6 +42,7 @@ public class CustomerService implements UserDetailsService {
         customer.setPassword(encoder.encode(customerRequestDto.getPassword()));
         customer.setRole(Customer.Roles.ROLE_USER);
         customerRepository.save(customer);
+        return mapper.toDto(customer);
     }
 
     @Override

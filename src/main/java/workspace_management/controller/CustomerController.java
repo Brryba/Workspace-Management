@@ -25,15 +25,14 @@ public class CustomerController {
     }
 
     @GetMapping
-    ResponseEntity<List<CustomerResponseDto>> getCustomers() {
-        List<CustomerResponseDto> customers = customerService.getAllCustomers();
-        return new ResponseEntity<>(customers, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    List<CustomerResponseDto> getCustomers() {
+        return customerService.getAllCustomers();
     }
 
     @PostMapping
-    public ResponseEntity<?> addCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto) {
-        customerService.add(customerRequestDto);
-        return new ResponseEntity<>(customerRequestDto, HttpStatus.CREATED);
+    public CustomerResponseDto addCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto) {
+        return customerService.add(customerRequestDto);
     }
 
     @ExceptionHandler(CustomerExistsException.class)

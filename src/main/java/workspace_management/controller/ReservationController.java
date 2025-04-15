@@ -25,39 +25,41 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AdminResponseDto>> showReservations() {
-        return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<AdminResponseDto> showReservations() {
+        return reservationService.getAllReservations();
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<List<UserResponseDto>> showReservations(@PathVariable("name") @NotBlank String name) {
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponseDto> showReservations(@PathVariable("name") @NotBlank String name) {
         if (!name.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
             throw new WrongCustomerException();
         }
-        return new ResponseEntity<>(reservationService.getReservationsByCustomerName(name), HttpStatus.OK);
+        return reservationService.getReservationsByCustomerName(name);
     }
 
     @PostMapping
-    public ResponseEntity<?> createReservation(@RequestBody @Valid BaseReservationDto baseReservationDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponseDto createReservation(@RequestBody @Valid BaseReservationDto baseReservationDto) {
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new ResponseEntity<>
-                (reservationService.createReservation(baseReservationDto, customerName), HttpStatus.CREATED);
+        return reservationService.createReservation(baseReservationDto, customerName);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateReservation(@PathVariable(name = "id") int reservationID,
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponseDto updateReservation(@PathVariable(name = "id") int reservationID,
                                                @RequestBody @Valid BaseReservationDto baseReservationDto) {
 
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new ResponseEntity<>(reservationService.updateReservation(reservationID,
-                baseReservationDto, customerName), HttpStatus.OK);
+        return reservationService.updateReservation(reservationID, baseReservationDto, customerName);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReservation(@PathVariable(name = "id") int reservationID) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservation(@PathVariable(name = "id") int reservationID) {
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         reservationService.deleteReservation(reservationID, customerName);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler({ReservationNotFoundException.class, WorkspaceNotFoundException.class})
