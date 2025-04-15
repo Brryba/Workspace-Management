@@ -33,7 +33,7 @@ public class CustomerService implements UserDetailsService {
         return customers.stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    public void add(CustomerRequestDto customerRequestDto) throws CustomerExistsException {
+    public void add(CustomerRequestDto customerRequestDto) {
         if (customerRepository.existsById(customerRequestDto.getName())) {
             throw new CustomerExistsException();
         }
@@ -45,7 +45,7 @@ public class CustomerService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         Customer customer = customerRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
         return new User(customer.getUsername(),

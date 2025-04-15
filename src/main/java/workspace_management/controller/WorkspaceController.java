@@ -46,22 +46,20 @@ public class WorkspaceController {
     ResponseEntity<IdentifiedWorkspaceDto> updateWorkspace
             (@PathVariable("id") int workspaceId,
              @Valid @RequestBody WorkspaceDto workspaceDto) {
-        try {
-            return new ResponseEntity<>(workspaceService.updateWorkspace(workspaceId,
-                    workspaceDto), HttpStatus.OK);
-        } catch (WorkspaceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(workspaceService.updateWorkspace(workspaceId,
+                workspaceDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> deleteWorkspace(@PathVariable("id") int workspaceId) {
-        try {
-            workspaceService.deleteWorkspace(workspaceId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (WorkspaceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        workspaceService.deleteWorkspace(workspaceId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(WorkspaceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String workspaceNotFound(WorkspaceNotFoundException e) {
+        return e.getMessage();
     }
 }

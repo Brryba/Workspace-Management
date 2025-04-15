@@ -32,11 +32,13 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<?> addCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto) {
-        try {
-            customerService.add(customerRequestDto);
-            return new ResponseEntity<>(customerRequestDto, HttpStatus.CREATED);
-        } catch (CustomerExistsException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
+        customerService.add(customerRequestDto);
+        return new ResponseEntity<>(customerRequestDto, HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler(CustomerExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String customerExistsException(CustomerExistsException e) {
+        return e.getMessage();
     }
 }
