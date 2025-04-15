@@ -8,6 +8,6 @@ import lombok.Setter;
 public class CustomerRequestDto {
     @Size(min = 1, max = 100, message = "Name must not be empty")
     private String name;
-    @Size(min = 1, max = 100)
+    @Size(min = 8, max = 100, message = "Password should contain at least 8 symbols")
     private String password;
 }

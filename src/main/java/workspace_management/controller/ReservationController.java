@@ -3,8 +3,6 @@ package workspace_management.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.reservation.AdminResponseDto;
@@ -60,23 +58,5 @@ public class ReservationController {
     public void deleteReservation(@PathVariable(name = "id") int reservationID) {
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         reservationService.deleteReservation(reservationID, customerName);
-    }
-
-    @ExceptionHandler({ReservationNotFoundException.class, WorkspaceNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(Exception e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler(WorkspaceNotAvailableException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleException(WorkspaceNotAvailableException e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler(WrongCustomerException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(WrongCustomerException e) {
-        return e.getMessage();
     }
 }
