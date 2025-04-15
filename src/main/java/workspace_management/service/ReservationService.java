@@ -1,5 +1,6 @@
 package workspace_management.service;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import workspace_management.dto.reservation.*;
@@ -41,9 +42,9 @@ public class ReservationService {
     }
 
     @Transactional
-    public UserResponseDto createReservation(RequestDto reservationDto)
+    public UserResponseDto createReservation(BaseReservationDto reservationDto, String customerName)
             throws WorkspaceNotFoundException, CustomerNotFoundException, WorkspaceNotAvailableException {
-        if (!customerRepository.existsById(reservationDto.getCustomerName())) {
+        if (!customerRepository.existsById(customerName)) {
             throw new CustomerNotFoundException();
         }
 
@@ -55,6 +56,8 @@ public class ReservationService {
         }
 
         Reservation reservation = mapper.fromRequestDto(reservationDto);
+        reservation.setCustomerName(customerName);
+
         reservation.setWorkspaceType(workspace.getType());
 
         reservationRepository.save(reservation);
@@ -64,11 +67,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public UserResponseDto updateReservation(int reservationID, RequestDto requestDto)
-            throws WorkspaceNotFoundException, ReservationNotFoundException, WorkspaceNotAvailableException {
+    public UserResponseDto updateReservation(int reservationID, BaseReservationDto requestDto, String customerName)
+            throws WorkspaceNotFoundException, ReservationNotFoundException, WorkspaceNotAvailableException, AccessDeniedException {
 
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
+
+        if (!reservation.getCustomerName().equals(customerName)) {
+            throw new org.springframework.security.access.AccessDeniedException("Access denied");
+        }
+
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
         if (!workspace.isAvailable() && reservation.getWorkspaceID()
@@ -84,9 +92,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteReservation(int reservationID) throws ReservationNotFoundException {
+    public void deleteReservation(int reservationID, String customerName) throws ReservationNotFoundException {
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
+
+
+        if (!reservation.getCustomerName().equals(customerName)) {
+            throw new AccessDeniedException("Access denied");
+        }
+
         Optional<Workspace> optionalWorkspace = workspaceRepository
                 .findById(reservation.getWorkspaceID());
 

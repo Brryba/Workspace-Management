@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.reservation.AdminResponseDto;
-import workspace_management.dto.reservation.RequestDto;
+import workspace_management.dto.reservation.BaseReservationDto;
 import workspace_management.dto.reservation.UserResponseDto;
 import workspace_management.exception.CustomerNotFoundException;
 import workspace_management.exception.ReservationNotFoundException;
@@ -30,15 +32,20 @@ public class ReservationController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<List<UserResponseDto>> showReservations(@PathVariable(name = "name") @NotBlank String customerName) {
-        return new ResponseEntity<>(reservationService.getReservationsByCustomerName(customerName), HttpStatus.OK);
+    public ResponseEntity<List<UserResponseDto>> showReservations(@PathVariable("name") @NotBlank String name) {
+        if (!name.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new AccessDeniedException("Access denied");
+        }
+        return new ResponseEntity<>(reservationService.getReservationsByCustomerName(name), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createReservation(@RequestBody @Valid RequestDto baseReservationDto) {
+    public ResponseEntity<?> createReservation(@RequestBody @Valid BaseReservationDto baseReservationDto) {
+        String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
             return new ResponseEntity<>
-                    (reservationService.createReservation(baseReservationDto), HttpStatus.CREATED);
+                    (reservationService.createReservation(baseReservationDto, customerName),
+                            HttpStatus.CREATED);
         } catch (WorkspaceNotFoundException | CustomerNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (WorkspaceNotAvailableException e) {
@@ -49,21 +56,25 @@ public class ReservationController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateReservation
             (@PathVariable(name = "id") int reservationID, 
-             @RequestBody @Valid RequestDto baseReservationDto) {
+             @RequestBody @Valid BaseReservationDto baseReservationDto) {
+        String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
             return new ResponseEntity<>(reservationService.updateReservation(reservationID,
-                    baseReservationDto), HttpStatus.OK);
+                    baseReservationDto, customerName), HttpStatus.OK);
         } catch (ReservationNotFoundException | WorkspaceNotFoundException e ) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WorkspaceNotAvailableException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "id") int reservationID) {
         try {
-            reservationService.deleteReservation(reservationID);
+            String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
+            reservationService.deleteReservation(reservationID, customerName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (ReservationNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
