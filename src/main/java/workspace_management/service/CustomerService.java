@@ -12,6 +12,7 @@ import workspace_management.dto.customer.CustomerRequestDto;
 import workspace_management.dto.customer.CustomerMapper;
 import workspace_management.dto.customer.CustomerResponseDto;
 import workspace_management.entity.Customer;
+import workspace_management.entity.CustomerFactory;
 import workspace_management.exception.CustomerExistsException;
 import workspace_management.repository.CustomerRepository;
 
@@ -26,7 +27,7 @@ public class CustomerService implements UserDetailsService {
     @Autowired
     private CustomerMapper mapper;
     @Autowired
-    private PasswordEncoder encoder;
+    private CustomerFactory customerFactory;
 
     public List<CustomerResponseDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
@@ -37,10 +38,8 @@ public class CustomerService implements UserDetailsService {
         if (customerRepository.existsById(customerRequestDto.getName())) {
             throw new CustomerExistsException();
         }
-        Customer customer = new Customer();
-        customer.setName(customerRequestDto.getName());
-        customer.setPassword(encoder.encode(customerRequestDto.getPassword()));
-        customer.setRole(Customer.Roles.ROLE_USER);
+        Customer customer = customerFactory.createUser(customerRequestDto.getName(),
+                customerRequestDto.getPassword());
         customerRepository.save(customer);
         return mapper.toDto(customer);
     }
