@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    image: 'mysql'
+    container_name: db
+    environment:
+      - MYSQL_DATABASE=workspacemanagement
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '3305:3306'
+
+
+  app:
+    build: .
+    container_name: workspace-management
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/workspacemanagement
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "8080:8080"
+
