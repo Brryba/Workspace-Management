@@ -61,11 +61,19 @@ public class WorkspaceService {
                 .collect(Collectors.toList());
     }
 
-//    public List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
-//        List<Workspace> workspaces = workspaceRepository
-//                .findWorkspacesByAvailable(true);
-//        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
-//    }
+    public List<IdentifiedWorkspaceDto> getAvailableWorkspaces(LocalDateTime start, LocalDateTime end) {
+        List<IdentifiedWorkspaceDto> workspaces = getAllWorkspaces();
+        return workspaces.stream()
+                .filter((workspace) -> {
+                    for (DateRangeDto dateRange : workspace.getAvailableDateRanges()) {
+                        if (dateRange.getStart().isBefore(end) && dateRange.getEnd().isAfter(start)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
+    }
 
     public IdentifiedWorkspaceDto createWorkspace(WorkspaceDto workspaceDto) {
         Workspace workspace = mapper.fromDto(workspaceDto);

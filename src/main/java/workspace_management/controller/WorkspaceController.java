@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceDto;
 import workspace_management.service.WorkspaceService;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -23,11 +25,13 @@ public class WorkspaceController {
         return workspaceService.getAllWorkspaces();
     }
 
-//    @GetMapping("/available")
-//    @ResponseStatus(HttpStatus.OK)
-//    List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
-//       // return workspaceService.getAvailableWorkspaces();
-//    }
+    @GetMapping("/available")
+    @ResponseStatus(HttpStatus.OK)
+    List<IdentifiedWorkspaceDto> getAvailableWorkspaces
+            (@RequestParam(name = "start") LocalDateTime start,
+             @RequestParam(name = "end") LocalDateTime end) {
+        return workspaceService.getAvailableWorkspaces(start, end);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
