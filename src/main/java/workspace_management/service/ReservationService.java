@@ -10,6 +10,7 @@ import workspace_management.repository.CustomerRepository;
 import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,12 @@ public class ReservationService {
         this.mapper = mapper;
     }
 
+    private boolean isWorkspaceAvailable(int workspaceId, LocalDateTime start, LocalDateTime end) {
+        List<Reservation> reservations = reservationRepository.findAllByWorkspaceID(workspaceId);
+        return reservations.stream().anyMatch((reservation ->
+                reservation.getStart().isAfter(end) || reservation.getEnd().isBefore(start)));
+    }
+
     public List<AdminResponseDto> getAllReservations() {
         return reservationRepository.findAll().stream().map(mapper::toResponseAdminDto).collect(Collectors.toList());
     }
@@ -38,7 +45,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public UserResponseDto createReservation(BaseReservationDto reservationDto, String customerName) {
+    public UserResponseDto createReservation(RequestReservationDto reservationDto, String customerName) {
         if (!customerRepository.existsById(customerName)) {
             throw new CustomerNotFoundException();
         }
@@ -46,9 +53,9 @@ public class ReservationService {
         Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
 
-//        if (!workspace.isAvailable()) {
-//            throw new WorkspaceNotAvailableException();
-//        }
+        if (isWorkspaceAvailable(reservationDto.getWorkspaceID(), reservationDto.getStart(), reservationDto.getEnd())) {
+            throw new WorkspaceNotAvailableException();
+        }
 
         Reservation reservation = mapper.fromRequestDto(reservationDto);
         reservation.setCustomerName(customerName);
@@ -56,13 +63,12 @@ public class ReservationService {
         reservation.setWorkspaceType(workspace.getType());
 
         reservationRepository.save(reservation);
-//        workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservation);
     }
 
     @Transactional
-    public UserResponseDto updateReservation(int reservationID, BaseReservationDto requestDto,
+    public UserResponseDto updateReservation(int reservationID, RequestReservationDto requestDto,
                                              String customerName)
            {
 
@@ -75,14 +81,13 @@ public class ReservationService {
 
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
-//        if (!workspace.isAvailable() && reservation.getWorkspaceID()
-//                != requestDto.getWorkspaceID()) {
-//            throw new WorkspaceNotAvailableException();
-//        }
+        if (!isWorkspaceAvailable(workspace.getId(), requestDto.getStart(), requestDto.getEnd()) && reservation.getWorkspaceID()
+                != requestDto.getWorkspaceID()) {
+            throw new WorkspaceNotAvailableException();
+        }
 
         mapper.updateReservation(reservation, requestDto,
                 workspace.getId(), workspace.getType());
-//        workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservationRepository.save(reservation));
     }
@@ -100,10 +105,7 @@ public class ReservationService {
         Optional<Workspace> optionalWorkspace = workspaceRepository
                 .findById(reservation.getWorkspaceID());
 
-//        optionalWorkspace.ifPresent(workspace -> {
-//            workspace.setAvailable(true);
-//            workspaceRepository.save(workspace);
-//        });
+        optionalWorkspace.ifPresent(workspaceRepository::save);
         reservationRepository.delete(reservation);
     }
 }
