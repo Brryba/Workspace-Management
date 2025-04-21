@@ -8,4 +8,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserResponseDto extends BaseReservationDto {
     protected int reservationID;
+    protected String workspaceType;
 }

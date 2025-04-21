@@ -18,10 +18,8 @@ public class Reservation {
     private int reservationID;
     @ManyToOne
     private Customer customer;
-    @Column(name = "workspace_id")
-    private int workspaceID;
-    @Column(name = "workspace_type")
-    private String workspaceType;
+    @ManyToOne
+    private Workspace workspace;
     private LocalDateTime start;
     private LocalDateTime end;
 }
