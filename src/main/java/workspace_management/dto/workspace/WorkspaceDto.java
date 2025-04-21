@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -20,5 +21,5 @@ public class WorkspaceDto {
 
     @Digits(integer = 10, fraction = 2, message = "Price must have maximum 2 decimal places")
     protected BigDecimal price;
-    protected boolean available;
+    protected List<DateRangeDto> availableDateRanges;
 }

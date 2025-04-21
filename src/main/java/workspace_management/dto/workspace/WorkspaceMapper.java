@@ -13,6 +13,6 @@ public interface WorkspaceMapper {
     default void updateWorkspace(Workspace workspace, WorkspaceDto workspaceDto) {
         workspace.setType(workspaceDto.getType());
         workspace.setPrice(workspaceDto.getPrice());
-        workspace.setAvailable(workspaceDto.isAvailable());
+//        workspace.setAvailable(workspaceDto.isAvailable());
     }
 }

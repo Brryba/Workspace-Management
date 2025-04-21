@@ -23,11 +23,11 @@ public class WorkspaceController {
         return workspaceService.getAllWorkspaces();
     }
 
-    @GetMapping("/available")
-    @ResponseStatus(HttpStatus.OK)
-    List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
-        return workspaceService.getAvailableWorkspaces();
-    }
+//    @GetMapping("/available")
+//    @ResponseStatus(HttpStatus.OK)
+//    List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
+//       // return workspaceService.getAvailableWorkspaces();
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

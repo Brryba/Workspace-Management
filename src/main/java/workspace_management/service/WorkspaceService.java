@@ -2,14 +2,20 @@ package workspace_management.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import workspace_management.constants.ReservationConstants;
+import workspace_management.dto.workspace.DateRangeDto;
 import workspace_management.dto.workspace.IdentifiedWorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceDto;
 import workspace_management.dto.workspace.WorkspaceMapper;
+import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.WorkspaceNotFoundException;
 import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,16 +31,41 @@ public class WorkspaceService {
         this.mapper = mapper;
     }
 
-    public List<IdentifiedWorkspaceDto> getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository.findAll();
-        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
+    private List<DateRangeDto> getAvailableDateRanges(int workspaceId) {
+        List<Reservation> reservations = reservationRepository.findAllByWorkspaceID(workspaceId);
+        reservations = reservations
+                .stream()
+                .sorted(Comparator.comparing(Reservation::getStart))
+                .toList();
+
+        List<DateRangeDto> availableDateRanges = new ArrayList<>();
+        LocalDateTime curr = LocalDateTime.now();
+        LocalDateTime end = curr.plusDays(ReservationConstants.MAX_RESERVATION_DAYS);
+        for (Reservation reservation : reservations) {
+            availableDateRanges.add(new DateRangeDto(curr, reservation.getStart()));
+            curr = reservation.getEnd();
+        }
+        availableDateRanges.add(new DateRangeDto(curr, end));
+        return availableDateRanges;
     }
 
-    public List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository
-                .findWorkspacesByAvailable(true);
-        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
+    public List<IdentifiedWorkspaceDto> getAllWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository.findAll();
+        return workspaces
+                .stream()
+                .map((workspace -> {
+                    IdentifiedWorkspaceDto workspaceDto = mapper.toIdDto(workspace);
+                    workspaceDto.setAvailableDateRanges(getAvailableDateRanges(workspace.getId()));
+                    return workspaceDto;
+                }))
+                .collect(Collectors.toList());
     }
+
+//    public List<IdentifiedWorkspaceDto> getAvailableWorkspaces() {
+//        List<Workspace> workspaces = workspaceRepository
+//                .findWorkspacesByAvailable(true);
+//        return workspaces.stream().map(mapper::toIdDto).collect(Collectors.toList());
+//    }
 
     public IdentifiedWorkspaceDto createWorkspace(WorkspaceDto workspaceDto) {
         Workspace workspace = mapper.fromDto(workspaceDto);

@@ -46,9 +46,9 @@ public class ReservationService {
         Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
 
-        if (!workspace.isAvailable()) {
-            throw new WorkspaceNotAvailableException();
-        }
+//        if (!workspace.isAvailable()) {
+//            throw new WorkspaceNotAvailableException();
+//        }
 
         Reservation reservation = mapper.fromRequestDto(reservationDto);
         reservation.setCustomerName(customerName);
@@ -56,7 +56,7 @@ public class ReservationService {
         reservation.setWorkspaceType(workspace.getType());
 
         reservationRepository.save(reservation);
-        workspace.setAvailable(false);
+//        workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservation);
     }
@@ -75,14 +75,14 @@ public class ReservationService {
 
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
-        if (!workspace.isAvailable() && reservation.getWorkspaceID()
-                != requestDto.getWorkspaceID()) {
-            throw new WorkspaceNotAvailableException();
-        }
+//        if (!workspace.isAvailable() && reservation.getWorkspaceID()
+//                != requestDto.getWorkspaceID()) {
+//            throw new WorkspaceNotAvailableException();
+//        }
 
         mapper.updateReservation(reservation, requestDto,
                 workspace.getId(), workspace.getType());
-        workspace.setAvailable(false);
+//        workspace.setAvailable(false);
         workspaceRepository.save(workspace);
         return mapper.toUserResponseDto(reservationRepository.save(reservation));
     }
@@ -100,10 +100,10 @@ public class ReservationService {
         Optional<Workspace> optionalWorkspace = workspaceRepository
                 .findById(reservation.getWorkspaceID());
 
-        optionalWorkspace.ifPresent(workspace -> {
-            workspace.setAvailable(true);
-            workspaceRepository.save(workspace);
-        });
+//        optionalWorkspace.ifPresent(workspace -> {
+//            workspace.setAvailable(true);
+//            workspaceRepository.save(workspace);
+//        });
         reservationRepository.delete(reservation);
     }
 }

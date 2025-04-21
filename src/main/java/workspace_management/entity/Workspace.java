@@ -18,7 +18,5 @@ public class Workspace implements Serializable {
     private int id;
     private String type;
     private BigDecimal price;
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private boolean available;
 }
 
