@@ -65,12 +65,13 @@ public class WorkspaceService {
         List<IdentifiedWorkspaceDto> workspaces = getAllWorkspaces();
         return workspaces.stream()
                 .filter((workspace) -> {
+                    if (workspace.getAvailableDateRanges().isEmpty()) return true;
                     for (DateRangeDto dateRange : workspace.getAvailableDateRanges()) {
-                        if (dateRange.getStart().isBefore(end) && dateRange.getEnd().isAfter(start)) {
-                            return false;
+                        if (dateRange.getStart().compareTo(start) < 1 && dateRange.getEnd().compareTo(end) > -1) {
+                            return true;
                         }
                     }
-                    return true;
+                    return false;
                 })
                 .collect(Collectors.toList());
     }
@@ -99,7 +100,7 @@ public class WorkspaceService {
             throw new WorkspaceNotFoundException();
         }
 
-        workspaceRepository.delete(workspace);
         reservationRepository.deleteAll(reservationRepository.findAllByWorkspaceID(id));
+        workspaceRepository.delete(workspace);
     }
 }

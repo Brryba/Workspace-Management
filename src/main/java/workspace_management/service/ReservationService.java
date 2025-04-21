@@ -31,8 +31,8 @@ public class ReservationService {
 
     private boolean isWorkspaceAvailable(int workspaceId, LocalDateTime start, LocalDateTime end) {
         List<Reservation> reservations = reservationRepository.findAllByWorkspaceID(workspaceId);
-        return reservations.stream().anyMatch((reservation ->
-                reservation.getStart().isAfter(end) || reservation.getEnd().isBefore(start)));
+        return reservations.stream().noneMatch((reservation ->
+                reservation.getStart().isBefore(end) && reservation.getEnd().isAfter(start)));
     }
 
     public List<AdminResponseDto> getAllReservations() {
@@ -53,7 +53,7 @@ public class ReservationService {
         Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
 
-        if (isWorkspaceAvailable(reservationDto.getWorkspaceID(), reservationDto.getStart(), reservationDto.getEnd())) {
+        if (!isWorkspaceAvailable(reservationDto.getWorkspaceID(), reservationDto.getStart(), reservationDto.getEnd())) {
             throw new WorkspaceNotAvailableException();
         }
 
@@ -81,8 +81,7 @@ public class ReservationService {
 
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
-        if (!isWorkspaceAvailable(workspace.getId(), requestDto.getStart(), requestDto.getEnd()) && reservation.getWorkspaceID()
-                != requestDto.getWorkspaceID()) {
+        if (!isWorkspaceAvailable(workspace.getId(), requestDto.getStart(), requestDto.getEnd())) {
             throw new WorkspaceNotAvailableException();
         }
 
