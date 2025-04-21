@@ -22,17 +22,14 @@ import java.util.stream.Collectors;
 @Service
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
-    private final ReservationRepository reservationRepository;
     private final WorkspaceMapper mapper;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository, ReservationRepository reservationRepository, WorkspaceMapper mapper) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, WorkspaceMapper mapper) {
         this.workspaceRepository = workspaceRepository;
-        this.reservationRepository = reservationRepository;
         this.mapper = mapper;
     }
 
-    private List<DateRangeDto> getAvailableDateRanges(int workspaceId) {
-        List<Reservation> reservations = reservationRepository.findAllByWorkspaceID(workspaceId);
+    private List<DateRangeDto> getAvailableDateRanges(List<Reservation> reservations) {
         reservations = reservations
                 .stream()
                 .sorted(Comparator.comparing(Reservation::getStart))
@@ -55,7 +52,7 @@ public class WorkspaceService {
                 .stream()
                 .map((workspace -> {
                     IdentifiedWorkspaceDto workspaceDto = mapper.toIdDto(workspace);
-                    workspaceDto.setAvailableDateRanges(getAvailableDateRanges(workspace.getId()));
+                    workspaceDto.setAvailableDateRanges(getAvailableDateRanges(workspace.getReservations()));
                     return workspaceDto;
                 }))
                 .collect(Collectors.toList());
@@ -100,7 +97,7 @@ public class WorkspaceService {
             throw new WorkspaceNotFoundException();
         }
 
-        reservationRepository.deleteAll(reservationRepository.findAllByWorkspaceID(id));
+
         workspaceRepository.delete(workspace);
     }
 }
