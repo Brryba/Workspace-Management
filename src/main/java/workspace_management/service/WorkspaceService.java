@@ -10,7 +10,6 @@ import workspace_management.dto.workspace.WorkspaceMapper;
 import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.WorkspaceNotFoundException;
-import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
 import java.time.LocalDateTime;
