@@ -23,16 +23,18 @@ public class ExceptionHandlerController {
                 .collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
     }
 
-    //404 WITH DEFAULT MESSAGE
-    @ExceptionHandler({ReservationNotFoundException.class, WorkspaceNotFoundException.class,
-            WrongCustomerException.class})
-    public ResponseEntity<String> handleException(Exception e) {
+    @ExceptionHandler({WrongCustomerException.class})
+    public ResponseEntity<String> handleExceptionWith403Code(WrongCustomerException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({ReservationNotFoundException.class, WorkspaceNotFoundException.class})
+    public ResponseEntity<String> handleExceptionWith404Code(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    //409 WITH DEFAULT MESSAGE
     @ExceptionHandler({WorkspaceNotAvailableException.class, CustomerNotFoundException.class})
-    public ResponseEntity<String> handleException(WorkspaceNotAvailableException e) {
+    public ResponseEntity<String> handleExceptionWith409Code(WorkspaceNotAvailableException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }
