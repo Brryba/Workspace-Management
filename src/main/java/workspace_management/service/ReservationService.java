@@ -65,8 +65,7 @@ public class ReservationService {
 
     @Transactional
     public UserResponseDto updateReservation(int reservationID, RequestReservationDto requestDto,
-                                             String customerName)
-           {
+                                             String customerName) {
 
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
@@ -77,12 +76,16 @@ public class ReservationService {
 
         Workspace workspace = workspaceRepository.findById(requestDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
-        if (isWorkspaceNotAvailable(workspace.getReservations(), requestDto.getStart(), requestDto.getEnd())) {
+
+        List<Reservation> reservations = workspace.getReservations().stream()
+                .filter(res -> res.getReservationID() != reservationID)
+                .toList();
+        if (isWorkspaceNotAvailable(reservations, requestDto.getStart(), requestDto.getEnd())) {
             throw new WorkspaceNotAvailableException();
         }
 
         mapper.updateReservation(reservation, requestDto, workspace);
-        workspaceRepository.save(workspace);
+        reservationRepository.save(reservation);
         return mapper.toUserResponseDto(reservationRepository.save(reservation));
     }
 

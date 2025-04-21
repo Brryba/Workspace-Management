@@ -10,7 +10,6 @@ import workspace_management.dto.workspace.WorkspaceMapper;
 import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.WorkspaceNotFoundException;
-import workspace_management.repository.ReservationRepository;
 import workspace_management.repository.WorkspaceRepository;
 
 import java.time.LocalDateTime;
@@ -39,7 +38,10 @@ public class WorkspaceService {
         LocalDateTime curr = LocalDateTime.now();
         LocalDateTime end = curr.plusDays(ReservationConstants.MAX_RESERVATION_DAYS);
         for (Reservation reservation : reservations) {
-            availableDateRanges.add(new DateRangeDto(curr, reservation.getStart()));
+            DateRangeDto dateRange = new DateRangeDto(curr, reservation.getStart());
+            if (!dateRange.getStart().equals(dateRange.getEnd())) {
+                availableDateRanges.add(dateRange);
+            }
             curr = reservation.getEnd();
         }
         availableDateRanges.add(new DateRangeDto(curr, end));
