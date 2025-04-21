@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import workspace_management.dto.reservation.AdminResponseDto;
 import workspace_management.dto.reservation.BaseReservationDto;
+import workspace_management.dto.reservation.RequestReservationDto;
 import workspace_management.dto.reservation.UserResponseDto;
 import workspace_management.exception.*;
 import workspace_management.service.ReservationService;
@@ -39,7 +40,7 @@ public class ReservationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto createReservation(@RequestBody @Valid BaseReservationDto baseReservationDto) {
+    public UserResponseDto createReservation(@RequestBody @Valid RequestReservationDto baseReservationDto) {
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         return reservationService.createReservation(baseReservationDto, customerName);
     }
@@ -47,7 +48,7 @@ public class ReservationController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserResponseDto updateReservation(@PathVariable(name = "id") int reservationID,
-                                               @RequestBody @Valid BaseReservationDto baseReservationDto) {
+                                               @RequestBody @Valid RequestReservationDto baseReservationDto) {
 
         String customerName = SecurityContextHolder.getContext().getAuthentication().getName();
         return reservationService.updateReservation(reservationID, baseReservationDto, customerName);

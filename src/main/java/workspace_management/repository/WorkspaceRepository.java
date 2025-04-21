@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Integer> {
-    List<Workspace> findWorkspacesByAvailable(boolean available);
+    //List<Workspace> findWorkspacesByAvailable(boolean available);
 
     Workspace getWorkspacesById(int id);
 }

@@ -16,12 +16,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private int reservationID;
-    @Column(name = "customer_name")
-    private String customerName;
-    @Column(name = "workspace_id")
-    private int workspaceID;
-    @Column(name = "workspace_type")
-    private String workspaceType;
+    @ManyToOne
+    private Customer customer;
+    @ManyToOne
+    private Workspace workspace;
     private LocalDateTime start;
     private LocalDateTime end;
 }

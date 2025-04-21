@@ -21,6 +21,8 @@ public class Customer implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Roles role;
+    @OneToMany(mappedBy = "customer")
+    private List<Reservation> reservations;
 
     public enum Roles {
         ROLE_ADMIN,

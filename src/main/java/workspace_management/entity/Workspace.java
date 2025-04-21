@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "workspace")
@@ -18,7 +19,7 @@ public class Workspace implements Serializable {
     private int id;
     private String type;
     private BigDecimal price;
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private boolean available;
+    @OneToMany(mappedBy = "workspace", orphanRemoval = true)
+    private List<Reservation> reservations;
 }
 
