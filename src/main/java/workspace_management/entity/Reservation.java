@@ -16,8 +16,8 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private int reservationID;
-    @Column(name = "customer_name")
-    private String customerName;
+    @ManyToOne
+    private Customer customer;
     @Column(name = "workspace_id")
     private int workspaceID;
     @Column(name = "workspace_type")

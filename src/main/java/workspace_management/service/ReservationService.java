@@ -3,6 +3,7 @@ package workspace_management.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import workspace_management.dto.reservation.*;
+import workspace_management.entity.Customer;
 import workspace_management.entity.Reservation;
 import workspace_management.entity.Workspace;
 import workspace_management.exception.*;
@@ -40,15 +41,14 @@ public class ReservationService {
     }
 
     public List<UserResponseDto> getReservationsByCustomerName(String customerName) {
-        return reservationRepository.findAllByCustomerName(customerName)
-                .stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
+        Customer customer = customerRepository.findByName(customerName).orElseThrow(CustomerNotFoundException::new);
+        System.out.println(customer);
+        return customer.getReservations().stream().map(mapper::toUserResponseDto).collect(Collectors.toList());
     }
 
     @Transactional
     public UserResponseDto createReservation(RequestReservationDto reservationDto, String customerName) {
-        if (!customerRepository.existsById(customerName)) {
-            throw new CustomerNotFoundException();
-        }
+        Customer customer = customerRepository.findByName(customerName).orElseThrow(CustomerNotFoundException::new);
 
         Workspace workspace = workspaceRepository.findById(reservationDto.getWorkspaceID())
                 .orElseThrow(WorkspaceNotFoundException::new);
@@ -58,7 +58,7 @@ public class ReservationService {
         }
 
         Reservation reservation = mapper.fromRequestDto(reservationDto);
-        reservation.setCustomerName(customerName);
+        reservation.setCustomer(customer);
 
         reservation.setWorkspaceType(workspace.getType());
 
@@ -75,7 +75,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationID)
                 .orElseThrow(ReservationNotFoundException::new);
 
-        if (!reservation.getCustomerName().equals(customerName)) {
+        if (!reservation.getCustomer().getName().equals(customerName)) {
             throw new WrongCustomerException();
         }
 
@@ -97,7 +97,7 @@ public class ReservationService {
                 .orElseThrow(ReservationNotFoundException::new);
 
 
-        if (!reservation.getCustomerName().equals(customerName)) {
+        if (!reservation.getCustomer().getName().equals(customerName)) {
             throw new WrongCustomerException();
         }
 
